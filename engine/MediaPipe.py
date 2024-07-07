@@ -1,11 +1,3 @@
-"""
-Author: <Anthony Sychev> (hello at dm211 dot com | a.sychev at jfranc dot studio) 
-Buy me a coffe: https://www.buymeacoffee.com/twooneone
-midiapipe.py (c) 2023 
-Created:  2023-01-21 00:52:55 
-Desc: Init and process mediapipe class
-"""
-
 import mediapipe as mp
 
 class MediaPipe:
@@ -27,6 +19,7 @@ class MediaPipe:
         )
 
     def processImage(self, image):
+        image.flags.writeable = True  # Ensure the image is writable
         out = self.holistic.process(image)
         
         self.results = out
@@ -74,6 +67,4 @@ class MediaPipe:
                 )
             )
         
-        return out        
-            
-            
+        return out

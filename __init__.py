@@ -26,6 +26,7 @@ import logging
 import traceback
 import textwrap
 import numpy as np
+import cv2
 
 from PosePipe.core.Setups import *
 
@@ -45,7 +46,6 @@ def ShowMessageBox(text="Empty message", title="Message Box", icon='INFO'):
     bpy.context.window_manager.popup_menu(draw, title=title, icon=icon)
 
 def run_full(file_path):
-    import cv2
     from PosePipe.engine.MediaPipe import MediaPipe
     
     bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
@@ -65,33 +65,19 @@ def run_full(file_path):
         pass
 
     if settings.body_tracking:
-        #if "Body" in bpy.context.scene.objects.keys():
-        #    body_delete()
         body = body_setup()
     if settings.hand_tracking:
-        #if "Left Hand" or "Right Hand" in bpy.context.scene.objects.keys():
-        #    hands_delete()
         hand_left, hand_right = hands_setup()
     if settings.face_tracking: 
-        #if "Face" in bpy.context.scene.objects.keys():
-        #    face_delete()
         face = face_setup()
 
     try:
         if file_path == "None": 
-            #camera by ID
             cap = cv2.VideoCapture(int(settings.camera_number))
                     
         if file_path != "None" and file_path != "Stream":
-            #file
             cap = cv2.VideoCapture(file_path)
         elif file_path == "Stream":
-            #stream
-            #Arduino > Examples > ESP32 > Camera > CameraWebServer
-            #https://github.com/rzeldent/esp32cam-rtsp
-            #https://randomnerdtutorials.com/esp32-cam-video-streaming-web-server-camera-home-assistant/
-            #https://www.hackster.io/onedeadmatch/esp32-cam-python-stream-opencv-example-1cc205
-
             if "http" in str(settings.stream_url_string) or "rtsp:" in str(settings.stream_url_string):
                 cap = cv2.VideoCapture()
                 cap.open(settings.stream_url_string)
@@ -110,15 +96,12 @@ def run_full(file_path):
         ShowMessageBox(title="Error", icon='ERROR', text="Camera or Stream cannot open.")
         return
 
-    # -----
-    
     holistic = MediaPipe(settings=settings)
 
     n = int(1)
     previousTime = 0
     
     while True:
-        #limit 9000 frames
         if n > 9000: break
 
         success, image = cap.read()
@@ -135,7 +118,6 @@ def run_full(file_path):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False
 
-        #flip image only for webcamera
         if file_path == "None" or settings.is_selfie == True:
             image = cv2.flip(image, 1)
 
@@ -144,23 +126,20 @@ def run_full(file_path):
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-
         currentTime = time.time()
         capture_fps = int(1 / (currentTime - previousTime))
         previousTime = currentTime
 
         settings.capture_fps = capture_fps
 
-        #Segmentation mask
         if settings.enable_segmentation == True:
             stack = np.stack((results.segmentation_mask,) * 3, axis=-1)
             if stack is not None:
                 condition = stack > 0.1
                 bg_image = np.zeros(image.shape, dtype=np.uint8)
-                bg_image[:] = (192, 192, 192) #gray
+                bg_image[:] = (192, 192, 192)
                 image = np.where(condition, image, bg_image)
 
-        #Show preview window
         cv2.putText(img=image, 
                     text='press long <ESC> or <Q> key to exit', 
                     org=(10,10), 
@@ -176,7 +155,6 @@ def run_full(file_path):
                     color=(255,255,255), 
                     thickness=2)
         
-        #resize image to 800x600
         if int(settings.preview_size_enum) == 800:
             image = cv2.resize(image, (800, 600))
 
@@ -186,8 +164,6 @@ def run_full(file_path):
             image = cv2.resize(image, (w, h))
                 
         cv2.imshow(f'MediaPipe Holistic {image.shape[1]}x{image.shape[0]}', image)
-
-        # -----
 
         if settings.body_tracking:
             if holistic.results.pose_landmarks:
@@ -218,7 +194,6 @@ def run_full(file_path):
                     except:
                         pass
 
-
             if holistic.results.right_hand_landmarks:
                 bns = [b for b in holistic.results.right_hand_landmarks.landmark]
                 scale = 2
@@ -245,19 +220,14 @@ def run_full(file_path):
                         bones[k].keyframe_insert(data_path="location", frame=n)
                     except:
                         pass
-
-        # -----
         
         bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
         bpy.context.scene.frame_set(n)
         n = n + 1
 
-    # -----
-
     cap.release()
     cv2.destroyAllWindows()
 
-    # Attach hands and face to body
     if settings.face_tracking:
         bpy.context.view_layer.objects.active = bpy.data.objects['Face']
         bpy.ops.object.constraint_add(type='COPY_LOCATION')
@@ -291,6 +261,7 @@ def run_full(file_path):
         bpy.ops.object.mode_set(mode='OBJECT')
     except:
         pass
+
 
 class RetimeAnimation(bpy.types.Operator):
     """Builds an armature to use with the mocap data"""
@@ -1303,7 +1274,7 @@ class RunInstallDependences(Operator):
 dependencesController = None
 depList = {
     "opencv-python":False,
-    "mediapipe":False,
+    "mediapipe-silicon":False,
     "protobuf":False,
     "numpy":False,
     "ultralytics":False, #yolov8
