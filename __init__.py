@@ -25,8 +25,6 @@ import time
 import logging
 import traceback
 import textwrap
-import numpy as np
-import cv2
 
 from PosePipe.core.Setups import *
 
@@ -47,6 +45,9 @@ def ShowMessageBox(text="Empty message", title="Message Box", icon='INFO'):
 
 def run_full(file_path):
     from PosePipe.engine.MediaPipe import MediaPipe
+
+    import numpy as np
+    import cv2
     
     bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
     
