@@ -438,7 +438,7 @@ class SkeletonBuilder(Operator):
         Body_Skeleton.display_type = 'STICK'
 
         try:
-            bpy.data.armatures["Body_Skeleton"].bones["Bone"].name = "root"
+            bpy.data.armatures["Body_Skeleton"].bones["Bone"].name = "mixamorig:Hips.001"
         except:
             pass
 
@@ -446,668 +446,666 @@ class SkeletonBuilder(Operator):
 
         root = None
         try:
-            root = bpy.context.active_object.data.edit_bones["root"]
+            root = bpy.context.active_object.data.edit_bones["mixamorig:Hips.001"]
         except:
             root = None
         if (root == None):
             return {'FINISHED'}
 
-        bpy.ops.armature.bone_primitive_add(name="pelvis")
-        pelvis = bpy.context.active_object.data.edit_bones["pelvis"]
-        bpy.context.active_object.data.edit_bones["pelvis"].tail[2] = 0.1
-        pelvis.parent = root
+        pelvis = bpy.context.active_object.data.edit_bones["mixamorig:Hips.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:Hips.001"].tail[2] = 0.1
 
-        bpy.ops.armature.bone_primitive_add(name="spine01")
-        spine01 = bpy.context.active_object.data.edit_bones["spine01"]
-        bpy.context.active_object.data.edit_bones["spine01"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:Spine.001")
+        spine01 = bpy.context.active_object.data.edit_bones["mixamorig:Spine.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:Spine.001"].tail[2] = 0.1
         spine01.parent = pelvis
 
-        bpy.ops.armature.bone_primitive_add(name="spine02")
-        spine02 = bpy.context.active_object.data.edit_bones["spine02"]
-        bpy.context.active_object.data.edit_bones["spine02"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:Spine1.001")
+        spine02 = bpy.context.active_object.data.edit_bones["mixamorig:Spine1.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:Spine1.001"].tail[2] = 0.1
         spine02.parent = spine01
 
-        bpy.ops.armature.bone_primitive_add(name="spine03")
-        spine03 = bpy.context.active_object.data.edit_bones["spine03"]
-        bpy.context.active_object.data.edit_bones["spine03"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:Spine2.001")
+        spine03 = bpy.context.active_object.data.edit_bones["mixamorig:Spine2.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:Spine2.001"].tail[2] = 0.1
         spine03.parent = spine02
 
-        bpy.ops.armature.bone_primitive_add(name="neck_01")
-        neck_01 = bpy.context.active_object.data.edit_bones["neck_01"]
-        bpy.context.active_object.data.edit_bones["neck_01"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:Neck.001")
+        neck_01 = bpy.context.active_object.data.edit_bones["mixamorig:Neck.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:Neck.001"].tail[2] = 0.1
         neck_01.parent = spine03
 
-        bpy.ops.armature.bone_primitive_add(name="head")
-        head = bpy.context.active_object.data.edit_bones["head"]
-        bpy.context.active_object.data.edit_bones["head"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:Head.001")
+        head = bpy.context.active_object.data.edit_bones["mixamorig:Head.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:Head.001"].tail[2] = 0.1
         head.parent = neck_01
 
-        bpy.ops.armature.bone_primitive_add(name="thigh_l")
-        thigh_l = bpy.context.active_object.data.edit_bones["thigh_l"]
-        bpy.context.active_object.data.edit_bones["thigh_l"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftUpLeg")
+        thigh_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftUpLeg"]
+        bpy.context.active_object.data.edit_bones["mixamorig:LeftUpLeg"].tail[2] = 0.1
         thigh_l.parent = pelvis
 
-        bpy.ops.armature.bone_primitive_add(name="calf_l")
-        calf_l = bpy.context.active_object.data.edit_bones["calf_l"]
-        bpy.context.active_object.data.edit_bones["calf_l"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftLeg")
+        calf_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftLeg"]
+        bpy.context.active_object.data.edit_bones["mixamorig:LeftLeg"].tail[2] = 0.1
         calf_l.parent = thigh_l
 
-        bpy.ops.armature.bone_primitive_add(name="foot_l")
-        foot_l = bpy.context.active_object.data.edit_bones["foot_l"]
-        bpy.context.active_object.data.edit_bones["foot_l"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftFoot")
+        foot_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftFoot"]
+        bpy.context.active_object.data.edit_bones["mixamorig:LeftFoot"].tail[2] = 0.1
         foot_l.parent = calf_l
 
-        bpy.ops.armature.bone_primitive_add(name="thigh_r")
-        thigh_r = bpy.context.active_object.data.edit_bones["thigh_r"]
-        bpy.context.active_object.data.edit_bones["thigh_r"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:RightUpLeg")
+        thigh_r = bpy.context.active_object.data.edit_bones["mixamorig:RightUpLeg"]
+        bpy.context.active_object.data.edit_bones["mixamorig:RightUpLeg"].tail[2] = 0.1
         thigh_r.parent = pelvis
 
-        bpy.ops.armature.bone_primitive_add(name="calf_r")
-        calf_r = bpy.context.active_object.data.edit_bones["calf_r"]
-        bpy.context.active_object.data.edit_bones["calf_r"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:RightLeg")
+        calf_r = bpy.context.active_object.data.edit_bones["mixamorig:RightLeg"]
+        bpy.context.active_object.data.edit_bones["mixamorig:RightLeg"].tail[2] = 0.1
         calf_r.parent = thigh_r
 
-        bpy.ops.armature.bone_primitive_add(name="foot_r")
-        foot_r = bpy.context.active_object.data.edit_bones["foot_r"]
-        bpy.context.active_object.data.edit_bones["foot_r"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:RightFoot")
+        foot_r = bpy.context.active_object.data.edit_bones["mixamorig:RightFoot"]
+        bpy.context.active_object.data.edit_bones["mixamorig:RightFoot"].tail[2] = 0.1
         foot_r.parent = calf_r
 
-        bpy.ops.armature.bone_primitive_add(name="clavicle_l")
-        clavicle_l = bpy.context.active_object.data.edit_bones["clavicle_l"]
-        bpy.context.active_object.data.edit_bones["clavicle_l"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftShoulder.001")
+        clavicle_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftShoulder.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:LeftShoulder.001"].tail[2] = 0.1
         clavicle_l.parent = spine03
 
-        bpy.ops.armature.bone_primitive_add(name="upperarm_l")
-        upperarm_l = bpy.context.active_object.data.edit_bones["upperarm_l"]
-        bpy.context.active_object.data.edit_bones["upperarm_l"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftArm.001")
+        upperarm_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftArm.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:LeftArm.001"].tail[2] = 0.1
         upperarm_l.parent = clavicle_l
 
-        bpy.ops.armature.bone_primitive_add(name="lowerarm_l")
-        lowerarm_l = bpy.context.active_object.data.edit_bones["lowerarm_l"]
-        bpy.context.active_object.data.edit_bones["lowerarm_l"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftForeArm.001")
+        lowerarm_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftForeArm.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:LeftForeArm.001"].tail[2] = 0.1
         lowerarm_l.parent = upperarm_l
 
-        bpy.ops.armature.bone_primitive_add(name="clavicle_r")
-        clavicle_r = bpy.context.active_object.data.edit_bones["clavicle_r"]
-        bpy.context.active_object.data.edit_bones["clavicle_r"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:RightShoulder.001")
+        clavicle_r = bpy.context.active_object.data.edit_bones["mixamorig:RightShoulder.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:RightShoulder.001"].tail[2] = 0.1
         clavicle_r.parent = spine03
 
-        bpy.ops.armature.bone_primitive_add(name="upperarm_r")
-        upperarm_r = bpy.context.active_object.data.edit_bones["upperarm_r"]
-        bpy.context.active_object.data.edit_bones["upperarm_r"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:RightArm.001")
+        upperarm_r = bpy.context.active_object.data.edit_bones["mixamorig:RightArm.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:RightArm.001"].tail[2] = 0.1
         upperarm_r.parent = clavicle_r
 
-        bpy.ops.armature.bone_primitive_add(name="lowerarm_r")
-        lowerarm_r = bpy.context.active_object.data.edit_bones["lowerarm_r"]
-        bpy.context.active_object.data.edit_bones["lowerarm_r"].tail[2] = 0.1
+        bpy.ops.armature.bone_primitive_add(name="mixamorig:RightForeArm.001")
+        lowerarm_r = bpy.context.active_object.data.edit_bones["mixamorig:RightForeArm.001"]
+        bpy.context.active_object.data.edit_bones["mixamorig:RightForeArm.001"].tail[2] = 0.1
         lowerarm_r.parent = upperarm_r
         
         if settings.hand_tracking:
-            bpy.ops.armature.bone_primitive_add(name="hand_l")
-            hand_l = bpy.context.active_object.data.edit_bones["hand_l"]
-            bpy.context.active_object.data.edit_bones["hand_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHand.001")
+            hand_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHand.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHand.001"].tail[2] = 0.1
             hand_l.parent = lowerarm_l
 
-            bpy.ops.armature.bone_primitive_add(name="thumb_01_l")
-            thumb_01_l = bpy.context.active_object.data.edit_bones["thumb_01_l"]
-            bpy.context.active_object.data.edit_bones["thumb_01_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandThumb1.001")
+            thumb_01_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandThumb1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandThumb1.001"].tail[2] = 0.1
             thumb_01_l.parent = hand_l
 
-            bpy.ops.armature.bone_primitive_add(name="thumb_02_l")
-            thumb_02_l = bpy.context.active_object.data.edit_bones["thumb_02_l"]
-            bpy.context.active_object.data.edit_bones["thumb_02_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandThumb2.001")
+            thumb_02_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandThumb2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandThumb2.001"].tail[2] = 0.1
             thumb_02_l.parent = thumb_01_l
 
-            bpy.ops.armature.bone_primitive_add(name="thumb_03_l")
-            thumb_03_l = bpy.context.active_object.data.edit_bones["thumb_03_l"]
-            bpy.context.active_object.data.edit_bones["thumb_03_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandThumb3.001")
+            thumb_03_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandThumb3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandThumb3.001"].tail[2] = 0.1
             thumb_03_l.parent = thumb_02_l
 
-            bpy.ops.armature.bone_primitive_add(name="index_01_l")
-            index_01_l = bpy.context.active_object.data.edit_bones["index_01_l"]
-            bpy.context.active_object.data.edit_bones["index_01_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandIndex1.001")
+            index_01_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandIndex1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandIndex1.001"].tail[2] = 0.1
             index_01_l.parent = hand_l
 
-            bpy.ops.armature.bone_primitive_add(name="index_02_l")
-            index_02_l = bpy.context.active_object.data.edit_bones["index_02_l"]
-            bpy.context.active_object.data.edit_bones["index_02_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandIndex2.001")
+            index_02_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandIndex2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandIndex2.001"].tail[2] = 0.1
             index_02_l.parent = index_01_l
 
-            bpy.ops.armature.bone_primitive_add(name="index_03_l")
-            index_03_l = bpy.context.active_object.data.edit_bones["index_03_l"]
-            bpy.context.active_object.data.edit_bones["index_03_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandIndex3.001")
+            index_03_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandIndex3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandIndex3.001"].tail[2] = 0.1
             index_03_l.parent = index_02_l
 
-            bpy.ops.armature.bone_primitive_add(name="middle_01_l")
-            middle_01_l = bpy.context.active_object.data.edit_bones["middle_01_l"]
-            bpy.context.active_object.data.edit_bones["middle_01_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandMiddle1.001")
+            middle_01_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandMiddle1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandMiddle1.001"].tail[2] = 0.1
             middle_01_l.parent = hand_l
 
-            bpy.ops.armature.bone_primitive_add(name="middle_02_l")
-            middle_02_l = bpy.context.active_object.data.edit_bones["middle_02_l"]
-            bpy.context.active_object.data.edit_bones["middle_02_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandMiddle2.001")
+            middle_02_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandMiddle2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandMiddle2.001"].tail[2] = 0.1
             middle_02_l.parent = middle_01_l
 
-            bpy.ops.armature.bone_primitive_add(name="middle_03_l")
-            middle_03_l = bpy.context.active_object.data.edit_bones["middle_03_l"]
-            bpy.context.active_object.data.edit_bones["middle_03_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandMiddle3.001")
+            middle_03_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandMiddle3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandMiddle3.001"].tail[2] = 0.1
             middle_03_l.parent = middle_02_l
 
-            bpy.ops.armature.bone_primitive_add(name="ring_01_l")
-            ring_01_l = bpy.context.active_object.data.edit_bones["ring_01_l"]
-            bpy.context.active_object.data.edit_bones["ring_01_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandRing1.001")
+            ring_01_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandRing1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandRing1.001"].tail[2] = 0.1
             ring_01_l.parent = hand_l
 
-            bpy.ops.armature.bone_primitive_add(name="ring_02_l")
-            ring_02_l = bpy.context.active_object.data.edit_bones["ring_02_l"]
-            bpy.context.active_object.data.edit_bones["ring_02_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandRing2.001")
+            ring_02_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandRing2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandRing2.001"].tail[2] = 0.1
             ring_02_l.parent = ring_01_l
 
-            bpy.ops.armature.bone_primitive_add(name="ring_03_l")
-            ring_03_l = bpy.context.active_object.data.edit_bones["ring_03_l"]
-            bpy.context.active_object.data.edit_bones["ring_03_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandRing3.001")
+            ring_03_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandRing3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandRing3.001"].tail[2] = 0.1
             ring_03_l.parent = ring_02_l
 
-            bpy.ops.armature.bone_primitive_add(name="pinky_01_l")
-            pinky_01_l = bpy.context.active_object.data.edit_bones["pinky_01_l"]
-            bpy.context.active_object.data.edit_bones["pinky_01_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandPinky1.001")
+            pinky_01_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandPinky1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandPinky1.001"].tail[2] = 0.1
             pinky_01_l.parent = hand_l
 
-            bpy.ops.armature.bone_primitive_add(name="pinky_02_l")
-            pinky_02_l = bpy.context.active_object.data.edit_bones["pinky_02_l"]
-            bpy.context.active_object.data.edit_bones["pinky_02_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandPinky2.001")
+            pinky_02_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandPinky2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandPinky2.001"].tail[2] = 0.1
             pinky_02_l.parent = pinky_01_l
 
-            bpy.ops.armature.bone_primitive_add(name="pinky_03_l")
-            pinky_03_l = bpy.context.active_object.data.edit_bones["pinky_03_l"]
-            bpy.context.active_object.data.edit_bones["pinky_03_l"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:LeftHandPinky3.001")
+            pinky_03_l = bpy.context.active_object.data.edit_bones["mixamorig:LeftHandPinky3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:LeftHandPinky3.001"].tail[2] = 0.1
             pinky_03_l.parent = pinky_02_l
 
-            bpy.ops.armature.bone_primitive_add(name="hand_r")
-            hand_r = bpy.context.active_object.data.edit_bones["hand_r"]
-            bpy.context.active_object.data.edit_bones["hand_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHand.001")
+            hand_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHand.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHand.001"].tail[2] = 0.1
             hand_r.parent = lowerarm_r
 
-            bpy.ops.armature.bone_primitive_add(name="thumb_01_r")
-            thumb_01_r = bpy.context.active_object.data.edit_bones["thumb_01_r"]
-            bpy.context.active_object.data.edit_bones["thumb_01_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandThumb1.001")
+            thumb_01_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandThumb1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandThumb1.001"].tail[2] = 0.1
             thumb_01_r.parent = hand_r
 
-            bpy.ops.armature.bone_primitive_add(name="thumb_02_r")
-            thumb_02_r = bpy.context.active_object.data.edit_bones["thumb_02_r"]
-            bpy.context.active_object.data.edit_bones["thumb_02_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandThumb2.001")
+            thumb_02_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandThumb2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandThumb2.001"].tail[2] = 0.1
             thumb_02_r.parent = thumb_01_r
 
-            bpy.ops.armature.bone_primitive_add(name="thumb_03_r")
-            thumb_03_r = bpy.context.active_object.data.edit_bones["thumb_03_r"]
-            bpy.context.active_object.data.edit_bones["thumb_03_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandThumb3.001")
+            thumb_03_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandThumb3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandThumb3.001"].tail[2] = 0.1
             thumb_03_r.parent = thumb_02_r
 
-            bpy.ops.armature.bone_primitive_add(name="index_01_r")
-            index_01_r = bpy.context.active_object.data.edit_bones["index_01_r"]
-            bpy.context.active_object.data.edit_bones["index_01_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandIndex1.001")
+            index_01_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandIndex1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandIndex1.001"].tail[2] = 0.1
             index_01_r.parent = hand_r
 
-            bpy.ops.armature.bone_primitive_add(name="index_02_r")
-            index_02_r = bpy.context.active_object.data.edit_bones["index_02_r"]
-            bpy.context.active_object.data.edit_bones["index_02_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandIndex2.001")
+            index_02_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandIndex2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandIndex2.001"].tail[2] = 0.1
             index_02_r.parent = index_01_r
 
-            bpy.ops.armature.bone_primitive_add(name="index_03_r")
-            index_03_r = bpy.context.active_object.data.edit_bones["index_03_r"]
-            bpy.context.active_object.data.edit_bones["index_03_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandIndex3.001")
+            index_03_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandIndex3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandIndex3.001"].tail[2] = 0.1
             index_03_r.parent = index_02_r
 
-            bpy.ops.armature.bone_primitive_add(name="middle_01_r")
-            middle_01_r = bpy.context.active_object.data.edit_bones["middle_01_r"]
-            bpy.context.active_object.data.edit_bones["middle_01_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandMiddle1.001")
+            middle_01_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandMiddle1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandMiddle1.001"].tail[2] = 0.1
             middle_01_r.parent = hand_r
 
-            bpy.ops.armature.bone_primitive_add(name="middle_02_r")
-            middle_02_r = bpy.context.active_object.data.edit_bones["middle_02_r"]
-            bpy.context.active_object.data.edit_bones["middle_02_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandMiddle2.001")
+            middle_02_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandMiddle2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandMiddle2.001"].tail[2] = 0.1
             middle_02_r.parent = middle_01_r
 
-            bpy.ops.armature.bone_primitive_add(name="middle_03_r")
-            middle_03_r = bpy.context.active_object.data.edit_bones["middle_03_r"]
-            bpy.context.active_object.data.edit_bones["middle_03_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandMiddle3.001")
+            middle_03_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandMiddle3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandMiddle3.001"].tail[2] = 0.1
             middle_03_r.parent = middle_02_r
 
-            bpy.ops.armature.bone_primitive_add(name="ring_01_r")
-            ring_01_r = bpy.context.active_object.data.edit_bones["ring_01_r"]
-            bpy.context.active_object.data.edit_bones["ring_01_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandRing1.001")
+            ring_01_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandRing1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandRing1.001"].tail[2] = 0.1
             ring_01_r.parent = hand_r
 
-            bpy.ops.armature.bone_primitive_add(name="ring_02_r")
-            ring_02_r = bpy.context.active_object.data.edit_bones["ring_02_r"]
-            bpy.context.active_object.data.edit_bones["ring_02_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandRing2.001")
+            ring_02_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandRing2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandRing2.001"].tail[2] = 0.1
             ring_02_r.parent = ring_01_r
 
-            bpy.ops.armature.bone_primitive_add(name="ring_03_r")
-            ring_03_r = bpy.context.active_object.data.edit_bones["ring_03_r"]
-            bpy.context.active_object.data.edit_bones["ring_03_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandRing3.001")
+            ring_03_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandRing3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandRing3.001"].tail[2] = 0.1
             ring_03_r.parent = ring_02_r
 
-            bpy.ops.armature.bone_primitive_add(name="pinky_01_r")
-            pinky_01_r = bpy.context.active_object.data.edit_bones["pinky_01_r"]
-            bpy.context.active_object.data.edit_bones["pinky_01_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandPinky1.001")
+            pinky_01_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandPinky1.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandPinky1.001"].tail[2] = 0.1
             pinky_01_r.parent = hand_r
 
-            bpy.ops.armature.bone_primitive_add(name="pinky_02_r")
-            pinky_02_r = bpy.context.active_object.data.edit_bones["pinky_02_r"]
-            bpy.context.active_object.data.edit_bones["pinky_02_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandPinky2.001")
+            pinky_02_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandPinky2.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandPinky2.001"].tail[2] = 0.1
             pinky_02_r.parent = pinky_01_r
 
-            bpy.ops.armature.bone_primitive_add(name="pinky_03_r")
-            pinky_03_r = bpy.context.active_object.data.edit_bones["pinky_03_r"]
-            bpy.context.active_object.data.edit_bones["pinky_03_r"].tail[2] = 0.1
+            bpy.ops.armature.bone_primitive_add(name="mixamorig:RightHandPinky3.001")
+            pinky_03_r = bpy.context.active_object.data.edit_bones["mixamorig:RightHandPinky3.001"]
+            bpy.context.active_object.data.edit_bones["mixamorig:RightHandPinky3.001"].tail[2] = 0.1
             pinky_03_r.parent = pinky_02_r
 
         bpy.ops.object.posemode_toggle()
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pelvis'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:Hips.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "pelvis", "Copy Location", bpy.data.objects, "23 left hip")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Hips.001", "Copy Location", bpy.data.objects, "23 left hip")
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "pelvis", "Copy Location.001", bpy.data.objects, "24 right hip")
-        bpy.context.object.pose.bones["pelvis"].constraints["Copy Location.001"].influence = 0.5
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Hips.001", "Copy Location.001", bpy.data.objects, "24 right hip")
+        bpy.context.object.pose.bones["mixamorig:Hips.001"].constraints["Copy Location.001"].influence = 0.5
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['spine01'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:Spine.001"].bone
         #bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        PosePipe_BodyBones.pose.bones['spine01'].location[1] = 0.1
-        PosePipe_BodyBones.pose.bones['spine02'].location[1] = 0.1
-        PosePipe_BodyBones.pose.bones['spine03'].location[1] = 0.1
-        PosePipe_BodyBones.pose.bones['neck_01'].location[1] = 0.1
-        PosePipe_BodyBones.pose.bones['head'].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine1.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Neck.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].location[1] = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['spine03'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].bone
         bpy.ops.pose.constraint_add(type='IK')
-        do_assign(bpy.context.object.pose.bones, "spine03", "IK", PosePipe_BodyBones)
-        bpy.context.object.pose.bones["spine03"].constraints["IK"].subtarget = 'neck_01'
-        bpy.context.object.pose.bones["spine03"].constraints["IK"].chain_count = 3
-        bpy.context.object.pose.bones["spine03"].constraints["IK"].pole_target = PosePipe_BodyBones
-        bpy.context.object.pose.bones["spine03"].constraints["IK"].pole_subtarget = 'neck_01'
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Spine2.001", "IK", PosePipe_BodyBones)
+        bpy.context.object.pose.bones["mixamorig:Spine2.001"].constraints["IK"].subtarget = "mixamorig:Neck.001"
+        bpy.context.object.pose.bones["mixamorig:Spine2.001"].constraints["IK"].chain_count = 3
+        bpy.context.object.pose.bones["mixamorig:Spine2.001"].constraints["IK"].pole_target = PosePipe_BodyBones
+        bpy.context.object.pose.bones["mixamorig:Spine2.001"].constraints["IK"].pole_subtarget = "mixamorig:Neck.001"
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['clavicle_l'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "clavicle_l", "Copy Location", bpy.data.objects, "11 left shoulder")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftShoulder.001", "Copy Location", bpy.data.objects, "11 left shoulder")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "clavicle_l", "Stretch To", bpy.data.objects, "12 right shoulder")
-        bpy.context.object.pose.bones["clavicle_l"].constraints['Stretch To'].rest_length = 0.4
-        bpy.context.object.pose.bones["clavicle_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["clavicle_l"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftShoulder.001", "Stretch To", bpy.data.objects, "12 right shoulder")
+        bpy.context.object.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].rest_length = 0.4
+        bpy.context.object.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['upperarm_l'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftArm.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "upperarm_l", "Copy Location", bpy.data.objects, "11 left shoulder")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftArm.001", "Copy Location", bpy.data.objects, "11 left shoulder")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "upperarm_l", "Stretch To", bpy.data.objects, "13 left elbow")
-        bpy.context.object.pose.bones["upperarm_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["upperarm_l"].constraints['Stretch To'].rest_length = 0.1
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftArm.001", "Stretch To", bpy.data.objects, "13 left elbow")
+        bpy.context.object.pose.bones["mixamorig:LeftArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:LeftArm.001"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['lowerarm_l'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftForeArm.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "lowerarm_l", "Copy Location", bpy.data.objects, "13 left elbow")
-        bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        if settings.body_tracking and settings.hand_tracking:
-            do_assign(bpy.context.object.pose.bones, "lowerarm_l", "Stretch To", bpy.data.objects, "00Hand Left")
-        else:
-            do_assign(bpy.context.object.pose.bones, "lowerarm_l", "Stretch To", bpy.data.objects, "15 left wrist")
-        bpy.context.object.pose.bones["lowerarm_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["lowerarm_l"].constraints['Stretch To'].rest_length = 0.1
-
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['clavicle_r'].bone
-        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "clavicle_r", "Copy Location", bpy.data.objects, "12 right shoulder")
-        bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "clavicle_r", "Stretch To", bpy.data.objects, "11 left shoulder")
-        bpy.context.object.pose.bones["clavicle_r"].constraints['Stretch To'].rest_length = 0.4
-        bpy.context.object.pose.bones["clavicle_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["clavicle_r"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
-
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['upperarm_r'].bone
-        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "upperarm_r", "Copy Location", bpy.data.objects, "12 right shoulder")
-        bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "upperarm_r", "Stretch To", bpy.data.objects, "14 right elbow")
-        bpy.context.object.pose.bones["upperarm_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["upperarm_r"].constraints['Stretch To'].rest_length = 0.1
-
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['lowerarm_r'].bone
-        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "lowerarm_r", "Copy Location", bpy.data.objects, "14 right elbow")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftForeArm.001", "Copy Location", bpy.data.objects, "13 left elbow")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
         if settings.body_tracking and settings.hand_tracking:
-            do_assign(bpy.context.object.pose.bones, "lowerarm_r", "Stretch To", bpy.data.objects, "00Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftForeArm.001", "Stretch To", bpy.data.objects, "00Hand Left")
         else:
-            do_assign(bpy.context.object.pose.bones, "lowerarm_r", "Stretch To", bpy.data.objects, "16 right wrist")
-        bpy.context.object.pose.bones["lowerarm_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["lowerarm_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftForeArm.001", "Stretch To", bpy.data.objects, "15 left wrist")
+        bpy.context.object.pose.bones["mixamorig:LeftForeArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:LeftForeArm.001"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thigh_l'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "thigh_l", "Copy Location", bpy.data.objects, "23 left hip")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightShoulder.001", "Copy Location", bpy.data.objects, "12 right shoulder")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "thigh_l", "Stretch To", bpy.data.objects, "25 left knee")
-        bpy.context.object.pose.bones["thigh_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["thigh_l"].constraints['Stretch To'].rest_length = 0.1
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightShoulder.001", "Stretch To", bpy.data.objects, "11 left shoulder")
+        bpy.context.object.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].rest_length = 0.4
+        bpy.context.object.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['calf_l'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightArm.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "calf_l", "Copy Location", bpy.data.objects, "25 left knee")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightArm.001", "Copy Location", bpy.data.objects, "12 right shoulder")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "calf_l", "Stretch To", bpy.data.objects, "27 left ankle")
-        bpy.context.object.pose.bones["calf_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["calf_l"].constraints['Stretch To'].rest_length = 0.1
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightArm.001", "Stretch To", bpy.data.objects, "14 right elbow")
+        bpy.context.object.pose.bones["mixamorig:RightArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:RightArm.001"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['foot_l'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightForeArm.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "foot_l", "Copy Location", bpy.data.objects, "27 left ankle")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightForeArm.001", "Copy Location", bpy.data.objects, "14 right elbow")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "foot_l", "Stretch To", bpy.data.objects, "31 left foot index")
-        bpy.context.object.pose.bones["foot_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["foot_l"].constraints['Stretch To'].rest_length = 0.1
+        if settings.body_tracking and settings.hand_tracking:
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightForeArm.001", "Stretch To", bpy.data.objects, "00Hand Right")
+        else:
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightForeArm.001", "Stretch To", bpy.data.objects, "16 right wrist")
+        bpy.context.object.pose.bones["mixamorig:RightForeArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:RightForeArm.001"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thigh_r'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftUpLeg"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "thigh_r", "Copy Location", bpy.data.objects, "24 right hip")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftUpLeg", "Copy Location", bpy.data.objects, "23 left hip")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "thigh_r", "Stretch To", bpy.data.objects, "26 right knee")
-        bpy.context.object.pose.bones["thigh_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["thigh_r"].constraints['Stretch To'].rest_length = 0.1
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftUpLeg", "Stretch To", bpy.data.objects, "25 left knee")
+        bpy.context.object.pose.bones["mixamorig:LeftUpLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:LeftUpLeg"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['calf_r'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftLeg"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "calf_r", "Copy Location", bpy.data.objects, "26 right knee")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftLeg", "Copy Location", bpy.data.objects, "25 left knee")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "calf_r", "Stretch To", bpy.data.objects, "28 right ankle")
-        bpy.context.object.pose.bones["calf_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["calf_r"].constraints['Stretch To'].rest_length = 0.1
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftLeg", "Stretch To", bpy.data.objects, "27 left ankle")
+        bpy.context.object.pose.bones["mixamorig:LeftLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:LeftLeg"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['foot_r'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftFoot"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "foot_r", "Copy Location", bpy.data.objects, "28 right ankle")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftFoot", "Copy Location", bpy.data.objects, "27 left ankle")
         bpy.ops.pose.constraint_add(type="STRETCH_TO")
-        do_assign(bpy.context.object.pose.bones, "foot_r", "Stretch To", bpy.data.objects, "32 right foot index")
-        bpy.context.object.pose.bones["foot_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-        bpy.context.object.pose.bones["foot_r"].constraints['Stretch To'].rest_length = 0.1
+        do_assign(bpy.context.object.pose.bones, "mixamorig:LeftFoot", "Stretch To", bpy.data.objects, "31 left foot index")
+        bpy.context.object.pose.bones["mixamorig:LeftFoot"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:LeftFoot"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['neck_01'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightUpLeg"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "neck_01", "Copy Location", bpy.data.objects, "11 left shoulder")
-        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "neck_01", "Copy Location.001", bpy.data.objects, "12 right shoulder")
-        bpy.context.object.pose.bones["neck_01"].constraints["Copy Location.001"].influence = 0.5
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightUpLeg", "Copy Location", bpy.data.objects, "24 right hip")
+        bpy.ops.pose.constraint_add(type="STRETCH_TO")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightUpLeg", "Stretch To", bpy.data.objects, "26 right knee")
+        bpy.context.object.pose.bones["mixamorig:RightUpLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:RightUpLeg"].constraints['Stretch To'].rest_length = 0.1
 
-        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['head'].bone
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightLeg"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "head", "Copy Location", bpy.data.objects, "09 mouth (left)")
-        bpy.context.object.pose.bones["head"].constraints['Copy Location'].use_y = False
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightLeg", "Copy Location", bpy.data.objects, "26 right knee")
+        bpy.ops.pose.constraint_add(type="STRETCH_TO")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightLeg", "Stretch To", bpy.data.objects, "28 right ankle")
+        bpy.context.object.pose.bones["mixamorig:RightLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:RightLeg"].constraints['Stretch To'].rest_length = 0.1
+
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightFoot"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "head", "Copy Location.001", bpy.data.objects, "10 mouth (right)")
-        bpy.context.object.pose.bones["head"].constraints["Copy Location.001"].influence = 0.5
-        bpy.context.object.pose.bones["head"].constraints["Copy Location.001"].use_y = False
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightFoot", "Copy Location", bpy.data.objects, "28 right ankle")
+        bpy.ops.pose.constraint_add(type="STRETCH_TO")
+        do_assign(bpy.context.object.pose.bones, "mixamorig:RightFoot", "Stretch To", bpy.data.objects, "32 right foot index")
+        bpy.context.object.pose.bones["mixamorig:RightFoot"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        bpy.context.object.pose.bones["mixamorig:RightFoot"].constraints['Stretch To'].rest_length = 0.1
+
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:Neck.001"].bone
         bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.context.object.pose.bones, "head", "Copy Location.002", bpy.data.objects, "08 right ear")
-        bpy.context.object.pose.bones["head"].constraints["Copy Location.002"].use_x = False
-        bpy.context.object.pose.bones["head"].constraints["Copy Location.002"].use_z = False
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Neck.001", "Copy Location", bpy.data.objects, "11 left shoulder")
+        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Neck.001", "Copy Location.001", bpy.data.objects, "12 right shoulder")
+        bpy.context.object.pose.bones["mixamorig:Neck.001"].constraints["Copy Location.001"].influence = 0.5
+
+        bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].bone
+        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Head.001", "Copy Location", bpy.data.objects, "09 mouth (left)")
+        bpy.context.object.pose.bones["mixamorig:Head.001"].constraints['Copy Location'].use_y = False
+        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Head.001", "Copy Location.001", bpy.data.objects, "10 mouth (right)")
+        bpy.context.object.pose.bones["mixamorig:Head.001"].constraints["Copy Location.001"].influence = 0.5
+        bpy.context.object.pose.bones["mixamorig:Head.001"].constraints["Copy Location.001"].use_y = False
+        bpy.ops.pose.constraint_add(type='COPY_LOCATION')
+        do_assign(bpy.context.object.pose.bones, "mixamorig:Head.001", "Copy Location.002", bpy.data.objects, "08 right ear")
+        bpy.context.object.pose.bones["mixamorig:Head.001"].constraints["Copy Location.002"].use_x = False
+        bpy.context.object.pose.bones["mixamorig:Head.001"].constraints["Copy Location.002"].use_z = False
 
         if settings.hand_tracking:
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['hand_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHand.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "hand_r", "Copy Location", bpy.data.objects, "00Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHand.001", "Copy Location", bpy.data.objects, "00Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "hand_r", "Stretch To", bpy.data.objects, "09Hand Right")
-            bpy.context.object.pose.bones["hand_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["hand_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHand.001", "Stretch To", bpy.data.objects, "09Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHand.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHand.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thumb_01_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandThumb1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "thumb_01_r", "Copy Location", bpy.data.objects, "01Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb1.001", "Copy Location", bpy.data.objects, "01Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "thumb_01_r", "Stretch To", bpy.data.objects, "02Hand Right")
-            bpy.context.object.pose.bones["thumb_01_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["thumb_01_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb1.001", "Stretch To", bpy.data.objects, "02Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thumb_02_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandThumb2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "thumb_02_r", "Copy Location", bpy.data.objects, "02Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb2.001", "Copy Location", bpy.data.objects, "02Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "thumb_02_r", "Stretch To", bpy.data.objects, "03Hand Right")
-            bpy.context.object.pose.bones["thumb_02_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["thumb_02_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb2.001", "Stretch To", bpy.data.objects, "03Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thumb_03_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandThumb3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "thumb_03_r", "Copy Location", bpy.data.objects, "03Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb3.001", "Copy Location", bpy.data.objects, "03Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "thumb_03_r", "Stretch To", bpy.data.objects, "04Hand Right")
-            bpy.context.object.pose.bones["thumb_03_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["thumb_03_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb3.001", "Stretch To", bpy.data.objects, "04Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['index_01_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandIndex1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "index_01_r", "Copy Location", bpy.data.objects, "05Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex1.001", "Copy Location", bpy.data.objects, "05Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "index_01_r", "Stretch To", bpy.data.objects, "06Hand Right")
-            bpy.context.object.pose.bones["index_01_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["index_01_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex1.001", "Stretch To", bpy.data.objects, "06Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['index_02_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandIndex2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "index_02_r", "Copy Location", bpy.data.objects, "06Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex2.001", "Copy Location", bpy.data.objects, "06Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "index_02_r", "Stretch To", bpy.data.objects, "07Hand Right")
-            bpy.context.object.pose.bones["index_02_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["index_02_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex2.001", "Stretch To", bpy.data.objects, "07Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['index_03_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandIndex3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "index_03_r", "Copy Location", bpy.data.objects, "07Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex3.001", "Copy Location", bpy.data.objects, "07Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "index_03_r", "Stretch To", bpy.data.objects, "08Hand Right")
-            bpy.context.object.pose.bones["index_03_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["index_03_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex3.001", "Stretch To", bpy.data.objects, "08Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['middle_01_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandMiddle1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "middle_01_r", "Copy Location", bpy.data.objects, "09Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandMiddle1.001", "Copy Location", bpy.data.objects, "09Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "middle_01_r", "Stretch To", bpy.data.objects, "10Hand Right")
-            bpy.context.object.pose.bones["middle_01_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["middle_01_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandMiddle1.001", "Stretch To", bpy.data.objects, "10Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandMiddle1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandMiddle1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['middle_02_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandMiddle2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "middle_02_r", "Copy Location", bpy.data.objects, "10Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandMiddle2.001", "Copy Location", bpy.data.objects, "10Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "middle_02_r", "Stretch To", bpy.data.objects, "11Hand Right")
-            bpy.context.object.pose.bones["middle_02_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["middle_02_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandMiddle2.001", "Stretch To", bpy.data.objects, "11Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandMiddle2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandMiddle2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['middle_03_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandMiddle3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "middle_03_r", "Copy Location", bpy.data.objects, "11Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandMiddle3.001", "Copy Location", bpy.data.objects, "11Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "middle_03_r", "Stretch To", bpy.data.objects, "12Hand Right")
-            bpy.context.object.pose.bones["middle_03_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["middle_03_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandMiddle3.001", "Stretch To", bpy.data.objects, "12Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandMiddle3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandMiddle3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['ring_01_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandRing1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "ring_01_r", "Copy Location", bpy.data.objects, "13Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandRing1.001", "Copy Location", bpy.data.objects, "13Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "ring_01_r", "Stretch To", bpy.data.objects, "14Hand Right")
-            bpy.context.object.pose.bones["ring_01_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["ring_01_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandRing1.001", "Stretch To", bpy.data.objects, "14Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandRing1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandRing1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['ring_02_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandRing2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "ring_02_r", "Copy Location", bpy.data.objects, "14Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandRing2.001", "Copy Location", bpy.data.objects, "14Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "ring_02_r", "Stretch To", bpy.data.objects, "15Hand Right")
-            bpy.context.object.pose.bones["ring_02_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["ring_02_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandRing2.001", "Stretch To", bpy.data.objects, "15Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandRing2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandRing2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['ring_03_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandRing3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "ring_03_r", "Copy Location", bpy.data.objects, "15Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandRing3.001", "Copy Location", bpy.data.objects, "15Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "ring_03_r", "Stretch To", bpy.data.objects, "16Hand Right")
-            bpy.context.object.pose.bones["ring_03_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["ring_03_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandRing3.001", "Stretch To", bpy.data.objects, "16Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandRing3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandRing3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pinky_01_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandPinky1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "pinky_01_r", "Copy Location", bpy.data.objects, "17Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandPinky1.001", "Copy Location", bpy.data.objects, "17Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "pinky_01_r", "Stretch To", bpy.data.objects, "18Hand Right")
-            bpy.context.object.pose.bones["pinky_01_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["pinky_01_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandPinky1.001", "Stretch To", bpy.data.objects, "18Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandPinky1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandPinky1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pinky_02_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandPinky2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "pinky_02_r", "Copy Location", bpy.data.objects, "18Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandPinky2.001", "Copy Location", bpy.data.objects, "18Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "pinky_02_r", "Stretch To", bpy.data.objects, "19Hand Right")
-            bpy.context.object.pose.bones["pinky_02_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["pinky_02_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandPinky2.001", "Stretch To", bpy.data.objects, "19Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandPinky2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandPinky2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pinky_03_r'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:RightHandPinky3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "pinky_03_r", "Copy Location", bpy.data.objects, "19Hand Right")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandPinky3.001", "Copy Location", bpy.data.objects, "19Hand Right")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "pinky_03_r", "Stretch To", bpy.data.objects, "20Hand Right")
-            bpy.context.object.pose.bones["pinky_03_r"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["pinky_03_r"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandPinky3.001", "Stretch To", bpy.data.objects, "20Hand Right")
+            bpy.context.object.pose.bones["mixamorig:RightHandPinky3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandPinky3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['hand_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHand.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "hand_l", "Copy Location", bpy.data.objects, "00Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHand.001", "Copy Location", bpy.data.objects, "00Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "hand_l", "Stretch To", bpy.data.objects, "09Hand Left")
-            bpy.context.object.pose.bones["hand_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["hand_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHand.001", "Stretch To", bpy.data.objects, "09Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHand.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHand.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thumb_01_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandThumb1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "thumb_01_l", "Copy Location", bpy.data.objects, "01Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb1.001", "Copy Location", bpy.data.objects, "01Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "thumb_01_l", "Stretch To", bpy.data.objects, "02Hand Left")
-            bpy.context.object.pose.bones["thumb_01_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["thumb_01_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb1.001", "Stretch To", bpy.data.objects, "02Hand Left")
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thumb_02_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandThumb2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "thumb_02_l", "Copy Location", bpy.data.objects, "02Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb2.001", "Copy Location", bpy.data.objects, "02Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "thumb_02_l", "Stretch To", bpy.data.objects, "03Hand Left")
-            bpy.context.object.pose.bones["thumb_02_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["thumb_02_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb2.001", "Stretch To", bpy.data.objects, "03Hand Left")
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['thumb_03_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandThumb3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "thumb_03_l", "Copy Location", bpy.data.objects, "03Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb3.001", "Copy Location", bpy.data.objects, "03Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "thumb_03_l", "Stretch To", bpy.data.objects, "04Hand Left")
-            bpy.context.object.pose.bones["thumb_03_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["thumb_03_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandThumb3.001", "Stretch To", bpy.data.objects, "04Hand Left")
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandThumb3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['index_01_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandIndex1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "index_01_l", "Copy Location", bpy.data.objects, "05Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex1.001", "Copy Location", bpy.data.objects, "05Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "index_01_l", "Stretch To", bpy.data.objects, "06Hand Left")
-            bpy.context.object.pose.bones["index_01_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["index_01_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:RightHandIndex1.001", "Stretch To", bpy.data.objects, "06Hand Left")
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:RightHandIndex1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['index_02_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandIndex2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "index_02_l", "Copy Location", bpy.data.objects, "06Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandIndex2.001", "Copy Location", bpy.data.objects, "06Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "index_02_l", "Stretch To", bpy.data.objects, "07Hand Left")
-            bpy.context.object.pose.bones["index_02_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["index_02_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandIndex2.001", "Stretch To", bpy.data.objects, "07Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandIndex2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandIndex2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['index_03_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandIndex3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "index_03_l", "Copy Location", bpy.data.objects, "07Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandIndex3.001", "Copy Location", bpy.data.objects, "07Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "index_03_l", "Stretch To", bpy.data.objects, "08Hand Left")
-            bpy.context.object.pose.bones["index_03_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["index_03_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandIndex3.001", "Stretch To", bpy.data.objects, "08Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandIndex3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandIndex3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['middle_01_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandMiddle1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "middle_01_l", "Copy Location", bpy.data.objects, "09Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandMiddle1.001", "Copy Location", bpy.data.objects, "09Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "middle_01_l", "Stretch To", bpy.data.objects, "10Hand Left")
-            bpy.context.object.pose.bones["middle_01_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["middle_01_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandMiddle1.001", "Stretch To", bpy.data.objects, "10Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandMiddle1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandMiddle1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['middle_02_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandMiddle2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "middle_02_l", "Copy Location", bpy.data.objects, "10Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandMiddle2.001", "Copy Location", bpy.data.objects, "10Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "middle_02_l", "Stretch To", bpy.data.objects, "11Hand Left")
-            bpy.context.object.pose.bones["middle_02_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["middle_02_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandMiddle2.001", "Stretch To", bpy.data.objects, "11Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandMiddle2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandMiddle2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['middle_03_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandMiddle3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "middle_03_l", "Copy Location", bpy.data.objects, "11Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandMiddle3.001", "Copy Location", bpy.data.objects, "11Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "middle_03_l", "Stretch To", bpy.data.objects, "12Hand Left")
-            bpy.context.object.pose.bones["middle_03_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["middle_03_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandMiddle3.001", "Stretch To", bpy.data.objects, "12Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandMiddle3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandMiddle3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['ring_01_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandRing1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "ring_01_l", "Copy Location", bpy.data.objects, "13Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandRing1.001", "Copy Location", bpy.data.objects, "13Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "ring_01_l", "Stretch To", bpy.data.objects, "14Hand Left")
-            bpy.context.object.pose.bones["ring_01_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["ring_01_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandRing1.001", "Stretch To", bpy.data.objects, "14Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandRing1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandRing1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['ring_02_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandRing2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "ring_02_l", "Copy Location", bpy.data.objects, "14Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandRing2.001", "Copy Location", bpy.data.objects, "14Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "ring_02_l", "Stretch To", bpy.data.objects, "15Hand Left")
-            bpy.context.object.pose.bones["ring_02_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["ring_02_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandRing2.001", "Stretch To", bpy.data.objects, "15Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandRing2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandRing2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['ring_03_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandRing3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "ring_03_l", "Copy Location", bpy.data.objects, "15Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandRing3.001", "Copy Location", bpy.data.objects, "15Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "ring_03_l", "Stretch To", bpy.data.objects, "16Hand Left")
-            bpy.context.object.pose.bones["ring_03_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["ring_03_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandRing3.001", "Stretch To", bpy.data.objects, "16Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandRing3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandRing3.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pinky_01_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandPinky1.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "pinky_01_l", "Copy Location", bpy.data.objects, "17Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandPinky1.001", "Copy Location", bpy.data.objects, "17Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "pinky_01_l", "Stretch To", bpy.data.objects, "18Hand Left")
-            bpy.context.object.pose.bones["pinky_01_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["pinky_01_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandPinky1.001", "Stretch To", bpy.data.objects, "18Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandPinky1.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandPinky1.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pinky_02_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandPinky2.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "pinky_02_l", "Copy Location", bpy.data.objects, "18Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandPinky2.001", "Copy Location", bpy.data.objects, "18Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "pinky_02_l", "Stretch To", bpy.data.objects, "19Hand Left")
-            bpy.context.object.pose.bones["pinky_02_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["pinky_02_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandPinky2.001", "Stretch To", bpy.data.objects, "19Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandPinky2.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandPinky2.001"].constraints['Stretch To'].rest_length = 0.1
 
-            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones['pinky_03_l'].bone
+            bpy.context.object.data.bones.active = PosePipe_BodyBones.pose.bones["mixamorig:LeftHandPinky3.001"].bone
             bpy.ops.pose.constraint_add(type='COPY_LOCATION')
-            do_assign(bpy.context.object.pose.bones, "pinky_03_l", "Copy Location", bpy.data.objects, "19Hand Left")
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandPinky3.001", "Copy Location", bpy.data.objects, "19Hand Left")
             bpy.ops.pose.constraint_add(type="STRETCH_TO")
-            do_assign(bpy.context.object.pose.bones, "pinky_03_l", "Stretch To", bpy.data.objects, "20Hand Left")
-            bpy.context.object.pose.bones["pinky_03_l"].constraints['Stretch To'].volume = 'NO_VOLUME'
-            bpy.context.object.pose.bones["pinky_03_l"].constraints['Stretch To'].rest_length = 0.1
+            do_assign(bpy.context.object.pose.bones, "mixamorig:LeftHandPinky3.001", "Stretch To", bpy.data.objects, "20Hand Left")
+            bpy.context.object.pose.bones["mixamorig:LeftHandPinky3.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+            bpy.context.object.pose.bones["mixamorig:LeftHandPinky3.001"].constraints['Stretch To'].rest_length = 0.1
 
         hide_trackers = ['Body','Hand Left','Hand Right','Face',
                         '17 left pinky', '18 right pinky', '19 left index', 
@@ -1131,7 +1129,7 @@ class SkeletonBuilder(Operator):
                     logging.error(traceback.format_exc())
 
         return {'FINISHED'}
-
+    
 class PosePipePanel(Panel):
     bl_label = "PosePipe - Camera MoCap"
     bl_category = "PosePipe"
