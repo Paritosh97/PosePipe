@@ -529,17 +529,6 @@ class SkeletonBuilder(bpy.types.Operator):
             if subtarget:
                 constraint.subtarget = subtarget
 
-        def do_assign(bones, bone_name, constraint_name, target_objects, target_name):
-            bone = bones.get(bone_name)
-            if bone:
-                constraint = bone.constraints.get(constraint_name)
-                if constraint:
-                    constraint.target = target_objects.get(target_name)
-                else:
-                    print(f"Constraint {constraint_name} not found on bone {bone_name}.")
-            else:
-                print(f"Bone {bone_name} not found.")
-
         add_constraint("mixamorig:Hips.001", "COPY_LOCATION", "23 left hip")
         add_constraint("mixamorig:Hips.001", "COPY_LOCATION", "24 right hip")
         PosePipe_BodyBones.pose.bones["mixamorig:Hips.001"].constraints["Copy Location.001"].influence = 0.5
