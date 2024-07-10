@@ -18,11 +18,9 @@ bl_info = {
 import pip
 import pkg_resources
 import bpy
-import os
 from bpy.types import Panel, Operator, PropertyGroup, FloatProperty, PointerProperty
 from bpy.utils import register_class, unregister_class
 from bpy_extras.io_utils import ImportHelper
-from mathutils import Vector, Matrix
 import time
 import logging
 import traceback
@@ -252,8 +250,6 @@ def run_full(file_path):
         bpy.context.scene.frame_set(n)
         n = n + 1
 
-        bpy.context.scene.frame_end = n
-
     cap.release()
     cv2.destroyAllWindows()
 
@@ -458,6 +454,7 @@ class SkeletonBuilder(bpy.types.Operator):
     bl_label = "Skeleton Builder"
 
     def execute(self, context):
+
         settings = bpy.context.scene.settings
 
         try:
@@ -465,172 +462,21 @@ class SkeletonBuilder(bpy.types.Operator):
         except:
             pass
 
-        bpy.context.scene.frame_set(0)
-
-        bpy.context.scene.view_layers.update()
-
         bpy.ops.object.armature_add(radius=0.1)
 
-        arm_obj = bpy.context.object
-        arm_obj.name = "BAZeel.body.rig"
+        PosePipe_BodyBones = bpy.context.object
+        PosePipe_BodyBones.name = "PosePipe_BodyBones"
 
-        bpy.data.armatures['Armature'].name = "BAZeel.body.rig"
-        Body_Skeleton = bpy.data.armatures["BAZeel.body.rig"]
+        bpy.data.armatures['Armature'].name = "Body_Skeleton"
+        Body_Skeleton = bpy.data.armatures["Body_Skeleton"]
         Body_Skeleton.display_type = 'STICK'
 
-        armature = {
-            "mixamorig:Hips": None,
-            "mixamorig:Spine.001": "mixamorig:Hips",
-            "mixamorig:Spine1.001": "mixamorig:Spine.001",
-            "mixamorig:Spine2.001": "mixamorig:Spine1.001",
-            "mixamorig:Neck.001": "mixamorig:Spine2.001",
-            "mixamorig:Head.001": "mixamorig:Neck.001",
-            "mixamorig:LeftUpLeg": "mixamorig:Hips",
-            "mixamorig:LeftLeg": "mixamorig:LeftUpLeg",
-            "mixamorig:LeftFoot": "mixamorig:LeftLeg",
-            "mixamorig:RightUpLeg": "mixamorig:Hips",
-            "mixamorig:RightLeg": "mixamorig:RightUpLeg",
-            "mixamorig:RightFoot": "mixamorig:RightLeg",
-            "mixamorig:LeftShoulder.001": "mixamorig:Spine2.001",
-            "mixamorig:LeftArm.001": "mixamorig:LeftShoulder.001",
-            "mixamorig:LeftForeArm.001": "mixamorig:LeftArm.001",
-            "mixamorig:RightShoulder.001": "mixamorig:Spine2.001",
-            "mixamorig:RightArm.001": "mixamorig:RightShoulder.001",
-            "mixamorig:RightForeArm.001": "mixamorig:RightArm.001",
-            "mixamorig:LeftHand.001": "mixamorig:LeftForeArm.001",
-            "mixamorig:LeftHandThumb1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandThumb2.001": "mixamorig:LeftHandThumb1.001",
-            "mixamorig:LeftHandThumb3.001": "mixamorig:LeftHandThumb2.001",
-            "mixamorig:LeftHandIndex1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandIndex2.001": "mixamorig:LeftHandIndex1.001",
-            "mixamorig:LeftHandIndex3.001": "mixamorig:LeftHandIndex2.001",
-            "mixamorig:LeftHandMiddle1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandMiddle2.001": "mixamorig:LeftHandMiddle1.001",
-            "mixamorig:LeftHandMiddle3.001": "mixamorig:LeftHandMiddle2.001",
-            "mixamorig:LeftHandRing1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandRing2.001": "mixamorig:LeftHandRing1.001",
-            "mixamorig:LeftHandRing3.001": "mixamorig:LeftHandRing2.001",
-            "mixamorig:LeftHandPinky1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandPinky2.001": "mixamorig:LeftHandPinky1.001",
-            "mixamorig:LeftHandPinky3.001": "mixamorig:LeftHandPinky2.001",
-            "mixamorig:RightHand.001": "mixamorig:RightForeArm.001",
-            "mixamorig:RightHandThumb1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandThumb2.001": "mixamorig:RightHandThumb1.001",
-            "mixamorig:RightHandThumb3.001": "mixamorig:RightHandThumb2.001",
-            "mixamorig:RightHandIndex1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandIndex2.001": "mixamorig:RightHandIndex1.001",
-            "mixamorig:RightHandIndex3.001": "mixamorig:RightHandIndex2.001",
-            "mixamorig:RightHandMiddle1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandMiddle2.001": "mixamorig:RightHandMiddle1.001",
-            "mixamorig:RightHandMiddle3.001": "mixamorig:RightHandMiddle2.001",
-            "mixamorig:RightHandRing1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandRing2.001": "mixamorig:RightHandRing1.001",
-            "mixamorig:RightHandRing3.001": "mixamorig:RightHandRing2.001",
-            "mixamorig:RightHandPinky1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandPinky2.001": "mixamorig:RightHandPinky1.001",
-            "mixamorig:RightHandPinky3.001": "mixamorig:RightHandPinky2.001"
-        }
+        try:
+            bpy.data.armatures["Body_Skeleton"].bones["Bone"].name = "mixamorig:Hips"
+        except:
+            pass
 
-        bone_location_references = {
-            "mixamorig:Hips": ["23 left hip", "24 right hip"],
-            "mixamorig:LeftShoulder.001": ["11 left shoulder"],
-            "mixamorig:LeftArm.001": ["11 left shoulder"],
-            "mixamorig:LeftForeArm.001": ["13 left elbow"],
-            "mixamorig:RightShoulder.001": ["12 right shoulder"],
-            "mixamorig:RightArm.001": ["12 right shoulder"],
-            "mixamorig:RightForeArm.001": ["14 right elbow"],
-            "mixamorig:LeftUpLeg": ["23 left hip"],
-            "mixamorig:LeftLeg": ["25 left knee"],
-            "mixamorig:LeftFoot": ["27 left ankle"],
-            "mixamorig:RightUpLeg": ["24 right hip"],
-            "mixamorig:RightLeg": ["26 right knee"],
-            "mixamorig:RightFoot": ["28 right ankle"],
-            "mixamorig:Neck.001": ["11 left shoulder", "12 right shoulder"],
-            "mixamorig:Head.001": ["09 mouth (left)", "10 mouth (right)"],
-            "mixamorig:RightHand.001": ["00Hand Right", "09Hand Right"],
-            "mixamorig:RightHandThumb1.001": ["01Hand Right", "02Hand Right"],
-            "mixamorig:RightHandThumb2.001": ["02Hand Right", "03Hand Right"],
-            "mixamorig:RightHandThumb3.001": ["03Hand Right", "04Hand Right"],
-            "mixamorig:RightHandIndex1.001": ["05Hand Right", "06Hand Right"],
-            "mixamorig:RightHandIndex2.001": ["06Hand Right", "07Hand Right"],
-            "mixamorig:RightHandIndex3.001": ["07Hand Right", "08Hand Right"],
-            "mixamorig:RightHandMiddle1.001": ["09Hand Right", "10Hand Right"],
-            "mixamorig:RightHandMiddle2.001": ["10Hand Right", "11Hand Right"],
-            "mixamorig:RightHandMiddle3.001": ["11Hand Right", "12Hand Right"],
-            "mixamorig:RightHandRing1.001": ["13Hand Right", "14Hand Right"],
-            "mixamorig:RightHandRing2.001": ["14Hand Right", "15Hand Right"],
-            "mixamorig:RightHandRing3.001": ["15Hand Right", "16Hand Right"],
-            "mixamorig:RightHandPinky1.001": ["17Hand Right", "18Hand Right"],
-            "mixamorig:RightHandPinky2.001": ["18Hand Right", "19Hand Right"],
-            "mixamorig:RightHandPinky3.001": ["19Hand Right", "20Hand Right"],
-            "mixamorig:LeftHand.001": ["00Hand Left", "09Hand Left"],
-            "mixamorig:LeftHandThumb1.001": ["01Hand Left", "02Hand Left"],
-            "mixamorig:LeftHandThumb2.001": ["02Hand Left", "03Hand Left"],
-            "mixamorig:LeftHandThumb3.001": ["03Hand Left", "04Hand Left"],
-            "mixamorig:LeftHandIndex1.001": ["05Hand Left", "06Hand Left"],
-            "mixamorig:LeftHandIndex2.001": ["06Hand Left", "07Hand Left"],
-            "mixamorig:LeftHandIndex3.001": ["07Hand Left", "08Hand Left"],
-            "mixamorig:LeftHandMiddle1.001": ["09Hand Left", "10Hand Left"],
-            "mixamorig:LeftHandMiddle2.001": ["10Hand Left", "11Hand Left"],
-            "mixamorig:LeftHandMiddle3.001": ["11Hand Left", "12Hand Left"],
-            "mixamorig:LeftHandRing1.001": ["13Hand Left", "14Hand Left"],
-            "mixamorig:LeftHandRing2.001": ["14Hand Left", "15Hand Left"],
-            "mixamorig:LeftHandRing3.001": ["15Hand Left", "16Hand Left"],
-            "mixamorig:LeftHandPinky1.001": ["17Hand Left", "18Hand Left"],
-            "mixamorig:LeftHandPinky2.001": ["18Hand Left", "19Hand Left"],
-            "mixamorig:LeftHandPinky3.001": ["19Hand Left", "20Hand Left"]
-        }
-
-        bone_ik_references = {
-            "mixamorig:Spine2.001": ["mixamorig:Neck.001", 3]
-        }
-
-        bone_length_references = {
-            "mixamorig:LeftShoulder.001": ["12 right shoulder", 0.6],
-            "mixamorig:LeftArm.001": ["13 left elbow", 1.0],
-            "mixamorig:LeftForeArm.001": ["00Hand Left", 1.0],
-            "mixamorig:RightShoulder.001": ["11 left shoulder", 0.6],
-            "mixamorig:RightArm.001": ["14 right elbow", 1.0],
-            "mixamorig:RightForeArm.001": ["00Hand Right", 1.0],
-            "mixamorig:LeftUpLeg": ["25 left knee", 1.0],
-            "mixamorig:LeftLeg": ["27 left ankle", 1.0],
-            "mixamorig:LeftFoot": ["31 left foot index", 1.0],
-            "mixamorig:RightUpLeg": ["26 right knee", 1.0],
-            "mixamorig:RightLeg": ["28 right ankle", 1.0],
-            "mixamorig:RightFoot": ["32 right foot index", 1.0],
-            "mixamorig:RightHand.001": ["09Hand Right", 1.0],
-            "mixamorig:RightHandThumb1.001": ["02Hand Right", 1.0],
-            "mixamorig:RightHandThumb2.001": ["03Hand Right", 1.0],
-            "mixamorig:RightHandThumb3.001": ["04Hand Right", 1.0],
-            "mixamorig:RightHandIndex1.001": ["06Hand Right", 1.0],
-            "mixamorig:RightHandIndex2.001": ["07Hand Right", 1.0],
-            "mixamorig:RightHandIndex3.001": ["08Hand Right", 1.0],
-            "mixamorig:RightHandMiddle1.001": ["10Hand Right", 1.0],
-            "mixamorig:RightHandMiddle2.001": ["11Hand Right", 1.0],
-            "mixamorig:RightHandMiddle3.001": ["12Hand Right", 1.0],
-            "mixamorig:RightHandRing1.001": ["14Hand Right", 1.0],
-            "mixamorig:RightHandRing2.001": ["15Hand Right", 1.0],
-            "mixamorig:RightHandRing3.001": ["16Hand Right", 1.0],
-            "mixamorig:RightHandPinky1.001": ["18Hand Right", 1.0],
-            "mixamorig:RightHandPinky2.001": ["19Hand Right", 1.0],
-            "mixamorig:RightHandPinky3.001": ["20Hand Right", 1.0],
-            "mixamorig:LeftHand.001": ["09Hand Left", 1.0],
-            "mixamorig:LeftHandThumb1.001": ["02Hand Left", 1.0],
-            "mixamorig:LeftHandThumb2.001": ["03Hand Left", 1.0],
-            "mixamorig:LeftHandThumb3.001": ["04Hand Left", 1.0],
-            "mixamorig:LeftHandIndex1.001": ["06Hand Left", 1.0],
-            "mixamorig:LeftHandIndex2.001": ["07Hand Left", 1.0],
-            "mixamorig:LeftHandIndex3.001": ["08Hand Left", 1.0],
-            "mixamorig:LeftHandMiddle1.001": ["10Hand Left", 1.0],
-            "mixamorig:LeftHandMiddle2.001": ["11Hand Left", 1.0],
-            "mixamorig:LeftHandMiddle3.001": ["12Hand Left", 1.0],
-            "mixamorig:LeftHandRing1.001": ["14Hand Left", 1.0],
-            "mixamorig:LeftHandRing2.001": ["15Hand Left", 1.0],
-            "mixamorig:LeftHandRing3.001": ["16Hand Left", 1.0],
-            "mixamorig:LeftHandPinky1.001": ["18Hand Left", 1.0],
-            "mixamorig:LeftHandPinky2.001": ["19Hand Left", 1.0],
-            "mixamorig:LeftHandPinky3.001": ["20Hand Left", 1.0],
-        }
+        bpy.ops.object.editmode_toggle()
 
         def create_bone(name, tail_z, parent_name=None):
             bpy.ops.armature.bone_primitive_add(name=name)
@@ -640,66 +486,229 @@ class SkeletonBuilder(bpy.types.Operator):
                 bone.parent = bpy.context.object.data.edit_bones[parent_name]
             return bone
 
-        def position_bone_edit(name, targets):
-            bone = arm_obj.data.edit_bones[name]
-            head_location_global = sum([bpy.data.objects[target].matrix_world.translation for target in targets], Vector()) / len(targets)
-            bone.head = head_location_global
-            bone.tail = head_location_global + Vector((0, 0, 0.1))
-            if name in bone_length_references:
-                # interpolate to find location
-                target, length = bone_length_references[name]
-                bone.tail = (1 - length) * head_location_global + length * bpy.data.objects[target].matrix_world.translation
+        spine01 = create_bone("mixamorig:Spine.001", 0.1, "mixamorig:Hips")
+        spine02 = create_bone("mixamorig:Spine1.001", 0.1, "mixamorig:Spine.001")
+        spine03 = create_bone("mixamorig:Spine2.001", 0.1, "mixamorig:Spine1.001")
+        neck_01 = create_bone("mixamorig:Neck.001", 0.1, "mixamorig:Spine2.001")
+        head = create_bone("mixamorig:Head.001", 0.1, "mixamorig:Neck.001")
 
-        try:
-        bpy.data.armatures["Body_Skeleton"].bones["Bone"].name = list(armature.keys())[0] 
+        thigh_l = create_bone("mixamorig:LeftUpLeg", 0.1, "mixamorig:Hips")
+        calf_l = create_bone("mixamorig:LeftLeg", 0.1, "mixamorig:LeftUpLeg")
+        foot_l = create_bone("mixamorig:LeftFoot", 0.1, "mixamorig:LeftLeg")
 
-        bpy.ops.object.mode_set(mode='EDIT')
+        thigh_r = create_bone("mixamorig:RightUpLeg", 0.1, "mixamorig:Hips")
+        calf_r = create_bone("mixamorig:RightLeg", 0.1, "mixamorig:RightUpLeg")
+        foot_r = create_bone("mixamorig:RightFoot", 0.1, "mixamorig:RightLeg")
 
-        for bone_name, parent_name in armature.items():
-            if parent_name:
-                create_bone(bone_name, 0.1, parent_name)
+        clavicle_l = create_bone("mixamorig:LeftShoulder.001", 0.1, "mixamorig:Spine2.001")
+        upperarm_l = create_bone("mixamorig:LeftArm.001", 0.1, "mixamorig:LeftShoulder.001")
+        lowerarm_l = create_bone("mixamorig:LeftForeArm.001", 0.1, "mixamorig:LeftArm.001")
 
-        for bone_name, targets in bone_location_references.items():
-            position_bone_edit(bone_name, targets)
+        clavicle_r = create_bone("mixamorig:RightShoulder.001", 0.1, "mixamorig:Spine2.001")
+        upperarm_r = create_bone("mixamorig:RightArm.001", 0.1, "mixamorig:RightShoulder.001")
+        lowerarm_r = create_bone("mixamorig:RightForeArm.001", 0.1, "mixamorig:RightArm.001")
 
-        # for spine chain
-        for bone_name, (end_effector, chain_length) in bone_ik_references.items():
-            bone = bpy.context.object.data.edit_bones.get(bone_name)
-            chain = []
-            for i in range(chain_length):
-                chain.append(bone)
-                bone = bone.parent
+        if settings.hand_tracking:
+            hand_bones = [
+                {"name": "mixamorig:LeftHand.001", "tail_z": 0.1, "parent": "mixamorig:LeftForeArm.001"},
+                {"name": "mixamorig:LeftHandThumb1.001", "tail_z": 0.1, "parent": "mixamorig:LeftHand.001"},
+                {"name": "mixamorig:LeftHandThumb2.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandThumb1.001"},
+                {"name": "mixamorig:LeftHandThumb3.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandThumb2.001"},
+                {"name": "mixamorig:LeftHandIndex1.001", "tail_z": 0.1, "parent": "mixamorig:LeftHand.001"},
+                {"name": "mixamorig:LeftHandIndex2.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandIndex1.001"},
+                {"name": "mixamorig:LeftHandIndex3.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandIndex2.001"},
+                {"name": "mixamorig:LeftHandMiddle1.001", "tail_z": 0.1, "parent": "mixamorig:LeftHand.001"},
+                {"name": "mixamorig:LeftHandMiddle2.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandMiddle1.001"},
+                {"name": "mixamorig:LeftHandMiddle3.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandMiddle2.001"},
+                {"name": "mixamorig:LeftHandRing1.001", "tail_z": 0.1, "parent": "mixamorig:LeftHand.001"},
+                {"name": "mixamorig:LeftHandRing2.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandRing1.001"},
+                {"name": "mixamorig:LeftHandRing3.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandRing2.001"},
+                {"name": "mixamorig:LeftHandPinky1.001", "tail_z": 0.1, "parent": "mixamorig:LeftHand.001"},
+                {"name": "mixamorig:LeftHandPinky2.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandPinky1.001"},
+                {"name": "mixamorig:LeftHandPinky3.001", "tail_z": 0.1, "parent": "mixamorig:LeftHandPinky2.001"},
+                {"name": "mixamorig:RightHand.001", "tail_z": 0.1, "parent": "mixamorig:RightForeArm.001"},
+                {"name": "mixamorig:RightHandThumb1.001", "tail_z": 0.1, "parent": "mixamorig:RightHand.001"},
+                {"name": "mixamorig:RightHandThumb2.001", "tail_z": 0.1, "parent": "mixamorig:RightHandThumb1.001"},
+                {"name": "mixamorig:RightHandThumb3.001", "tail_z": 0.1, "parent": "mixamorig:RightHandThumb2.001"},
+                {"name": "mixamorig:RightHandIndex1.001", "tail_z": 0.1, "parent": "mixamorig:RightHand.001"},
+                {"name": "mixamorig:RightHandIndex2.001", "tail_z": 0.1, "parent": "mixamorig:RightHandIndex1.001"},
+                {"name": "mixamorig:RightHandIndex3.001", "tail_z": 0.1, "parent": "mixamorig:RightHandIndex2.001"},
+                {"name": "mixamorig:RightHandMiddle1.001", "tail_z": 0.1, "parent": "mixamorig:RightHand.001"},
+                {"name": "mixamorig:RightHandMiddle2.001", "tail_z": 0.1, "parent": "mixamorig:RightHandMiddle1.001"},
+                {"name": "mixamorig:RightHandMiddle3.001", "tail_z": 0.1, "parent": "mixamorig:RightHandMiddle2.001"},
+                {"name": "mixamorig:RightHandRing1.001", "tail_z": 0.1, "parent": "mixamorig:RightHand.001"},
+                {"name": "mixamorig:RightHandRing2.001", "tail_z": 0.1, "parent": "mixamorig:RightHandRing1.001"},
+                {"name": "mixamorig:RightHandRing3.001", "tail_z": 0.1, "parent": "mixamorig:RightHandRing2.001"},
+                {"name": "mixamorig:RightHandPinky1.001", "tail_z": 0.1, "parent": "mixamorig:RightHand.001"},
+                {"name": "mixamorig:RightHandPinky2.001", "tail_z": 0.1, "parent": "mixamorig:RightHandPinky1.001"},
+                {"name": "mixamorig:RightHandPinky3.001", "tail_z": 0.1, "parent": "mixamorig:RightHandPinky2.001"}
+            ]
+            
+            for bone in hand_bones:
+                create_bone(bone["name"], bone["tail_z"], bone["parent"])
 
-            for bone in reversed(chain):
-                bone.head = bone.parent.tail
-                bone.tail = bone.head + Vector((0, 0, 0.1))
+        bpy.ops.object.posemode_toggle()
 
-        bpy.context.scene.view_layers.update()
+        def add_constraint(bone_name, constraint_type, target_name, subtarget=None):
+            bone = PosePipe_BodyBones.pose.bones.get(bone_name)
+            if not bone:
+                print(f"Bone {bone_name} not found.")
+                return
+            constraint = bone.constraints.new(constraint_type)
+            target = bpy.data.objects.get(target_name)
+            if not target:
+                print(f"Target {target_name} not found.")
+                return
+            constraint.target = target
+            if subtarget:
+                constraint.subtarget = subtarget
 
-        bpy.ops.object.mode_set(mode='POSE')
+        add_constraint("mixamorig:Hips", "COPY_LOCATION", "23 left hip")
+        add_constraint("mixamorig:Hips", "COPY_LOCATION", "24 right hip")
+        PosePipe_BodyBones.pose.bones["mixamorig:Hips"].constraints["Copy Location.001"].influence = 0.5
 
-        # Set the rest pose at frame 0
-        bpy.ops.pose.armature_apply()
-        bpy.ops.pose.armature_apply(selected=False)
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine1.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Neck.001"].location[1] = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].location[1] = 0.1
 
-        #for bone_name, (end_effector, chain_length) in bone_ik_references.items():
-            #bone = arm_obj.pose.bones.get(bone_name)
-            #constraint = bone.constraints.new("IK")
-            #constraint.target = arm_obj
-            #constraint.subtarget = end_effector
-            #constraint.chain_count = chain_length
+        add_constraint("mixamorig:Spine2.001", "IK", "PosePipe_BodyBones")
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].constraints["IK"].subtarget = "mixamorig:Neck.001"
+        PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].constraints["IK"].chain_count = 3
 
-        # loop through frames and set keyframes
-        #for frame in range(0, bpy.context.scene.frame_end):
-            #bpy.context.scene.frame_set(frame)
+        add_constraint("mixamorig:LeftShoulder.001", "COPY_LOCATION", "12 right shoulder")
+        add_constraint("mixamorig:LeftShoulder.001", "COPY_LOCATION", "11 left shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints["Copy Location.001"].influence = 0.5
+        add_constraint("mixamorig:LeftShoulder.001", "STRETCH_TO", "11 left shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].rest_length = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
 
-            #for bone_name, targets in bone_location_references.items():
-                #position_bone_pose(bone_name, targets)
+        add_constraint("mixamorig:LeftArm.001", "COPY_LOCATION", "11 left shoulder")
+        add_constraint("mixamorig:LeftArm.001", "STRETCH_TO", "13 left elbow")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftArm.001"].constraints['Stretch To'].rest_length = 0.1
 
+        add_constraint("mixamorig:LeftForeArm.001", "COPY_LOCATION", "13 left elbow")
+        if settings.body_tracking and settings.hand_tracking:
+            add_constraint("mixamorig:LeftForeArm.001", "STRETCH_TO", "00Hand Left")
+        else:
+            add_constraint("mixamorig:LeftForeArm.001", "STRETCH_TO", "15 left wrist")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftForeArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftForeArm.001"].constraints['Stretch To'].rest_length = 0.1
 
-        # Hide the trackers
-        hide_trackers = ['Body', 'Hand Left', 'Hand Right', 'Face',
-                         '17 left pinky', '18 right pinky', '19 left index',
+        add_constraint("mixamorig:RightShoulder.001", "COPY_LOCATION", "11 left shoulder")
+        add_constraint("mixamorig:RightShoulder.001", "COPY_LOCATION", "12 right shoulder")
+        add_constraint("mixamorig:RightShoulder.001", "STRETCH_TO", "12 right shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints["Copy Location.001"].influence = 0.5
+        add_constraint("mixamorig:LeftShoulder.001", "STRETCH_TO", "11 left shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].rest_length = 0.1
+        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
+
+        add_constraint("mixamorig:RightArm.001", "COPY_LOCATION", "12 right shoulder")
+        add_constraint("mixamorig:RightArm.001", "STRETCH_TO", "14 right elbow")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:RightArm.001"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:RightForeArm.001", "COPY_LOCATION", "14 right elbow")
+        if settings.body_tracking and settings.hand_tracking:
+            add_constraint("mixamorig:RightForeArm.001", "STRETCH_TO", "00Hand Right")
+        else:
+            add_constraint("mixamorig:RightForeArm.001", "STRETCH_TO", "16 right wrist")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightForeArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:RightForeArm.001"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:LeftUpLeg", "COPY_LOCATION", "23 left hip")
+        add_constraint("mixamorig:LeftUpLeg", "STRETCH_TO", "25 left knee")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftUpLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftUpLeg"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:LeftLeg", "COPY_LOCATION", "25 left knee")
+        add_constraint("mixamorig:LeftLeg", "STRETCH_TO", "27 left ankle")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftLeg"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:LeftFoot", "COPY_LOCATION", "27 left ankle")
+        add_constraint("mixamorig:LeftFoot", "STRETCH_TO", "31 left foot index")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftFoot"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftFoot"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:RightUpLeg", "COPY_LOCATION", "24 right hip")
+        add_constraint("mixamorig:RightUpLeg", "STRETCH_TO", "26 right knee")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightUpLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:RightUpLeg"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:RightLeg", "COPY_LOCATION", "26 right knee")
+        add_constraint("mixamorig:RightLeg", "STRETCH_TO", "28 right ankle")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightLeg"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:RightLeg"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:RightFoot", "COPY_LOCATION", "28 right ankle")
+        add_constraint("mixamorig:RightFoot", "STRETCH_TO", "32 right foot index")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightFoot"].constraints['Stretch To'].volume = 'NO_VOLUME'
+        PosePipe_BodyBones.pose.bones["mixamorig:RightFoot"].constraints['Stretch To'].rest_length = 0.1
+
+        add_constraint("mixamorig:Neck.001", "COPY_LOCATION", "11 left shoulder")
+        add_constraint("mixamorig:Neck.001", "COPY_LOCATION", "12 right shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:Neck.001"].constraints["Copy Location.001"].influence = 0.5
+
+        add_constraint("mixamorig:Head.001", "COPY_LOCATION", "09 mouth (left)")
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints['Copy Location'].use_y = False
+        add_constraint("mixamorig:Head.001", "COPY_LOCATION", "10 mouth (right)")
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints["Copy Location.001"].influence = 0.5
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints["Copy Location.001"].use_y = False
+        add_constraint("mixamorig:Head.001", "COPY_LOCATION", "08 right ear")
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints["Copy Location.002"].use_x = False
+        PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints["Copy Location.002"].use_z = False
+
+        if settings.hand_tracking:
+
+            hand_bones_and_constraints = {
+                "RightHand.001": ["00Hand Right", "09Hand Right"],
+                "RightHandThumb1.001": ["01Hand Right", "02Hand Right"],
+                "RightHandThumb2.001": ["02Hand Right", "03Hand Right"],
+                "RightHandThumb3.001": ["03Hand Right", "04Hand Right"],
+                "RightHandIndex1.001": ["05Hand Right", "06Hand Right"],
+                "RightHandIndex2.001": ["06Hand Right", "07Hand Right"],
+                "RightHandIndex3.001": ["07Hand Right", "08Hand Right"],
+                "RightHandMiddle1.001": ["09Hand Right", "10Hand Right"],
+                "RightHandMiddle2.001": ["10Hand Right", "11Hand Right"],
+                "RightHandMiddle3.001": ["11Hand Right", "12Hand Right"],
+                "RightHandRing1.001": ["13Hand Right", "14Hand Right"],
+                "RightHandRing2.001": ["14Hand Right", "15Hand Right"],
+                "RightHandRing3.001": ["15Hand Right", "16Hand Right"],
+                "RightHandPinky1.001": ["17Hand Right", "18Hand Right"],
+                "RightHandPinky2.001": ["18Hand Right", "19Hand Right"],
+                "RightHandPinky3.001": ["19Hand Right", "20Hand Right"],
+                "LeftHand.001": ["00Hand Left", "09Hand Left"],
+                "LeftHandThumb1.001": ["01Hand Left", "02Hand Left"],
+                "LeftHandThumb2.001": ["02Hand Left", "03Hand Left"],
+                "LeftHandThumb3.001": ["03Hand Left", "04Hand Left"],
+                "LeftHandIndex1.001": ["05Hand Left", "06Hand Left"],
+                "LeftHandIndex2.001": ["06Hand Left", "07Hand Left"],
+                "LeftHandIndex3.001": ["07Hand Left", "08Hand Left"],
+                "LeftHandMiddle1.001": ["09Hand Left", "10Hand Left"],
+                "LeftHandMiddle2.001": ["10Hand Left", "11Hand Left"],
+                "LeftHandMiddle3.001": ["11Hand Left", "12Hand Left"],
+                "LeftHandRing1.001": ["13Hand Left", "14Hand Left"],
+                "LeftHandRing2.001": ["14Hand Left", "15Hand Left"],
+                "LeftHandRing3.001": ["15Hand Left", "16Hand Left"],
+                "LeftHandPinky1.001": ["17Hand Left", "18Hand Left"],
+                "LeftHandPinky2.001": ["18Hand Left", "19Hand Left"],
+                "LeftHandPinky3.001": ["19Hand Left", "20Hand Left"]
+            }
+
+            for bone_name, cstr_objs in hand_bones_and_constraints.items():
+
+                add_constraint(f"mixamorig:{bone_name}", "COPY_LOCATION", cstr_objs[0])
+                add_constraint(f"mixamorig:{bone_name}", "STRETCH_TO", cstr_objs[1])
+                PosePipe_BodyBones.pose.bones[f"mixamorig:{bone_name}"].constraints['Stretch To'].volume = 'NO_VOLUME'
+                PosePipe_BodyBones.pose.bones[f"mixamorig:{bone_name}"].constraints['Stretch To'].rest_length = 0.1
+
+        hide_trackers = ['Body','Hand Left','Hand Right','Face',
+                         '17 left pinky', '18 right pinky', '19 left index', 
                          '20 right index', '21 left thumb', '22 right thumb']
 
         for tracker in hide_trackers:
@@ -720,214 +729,6 @@ class SkeletonBuilder(bpy.types.Operator):
                     logging.error(traceback.format_exc())
 
         return {'FINISHED'}
-
-class AttachSkeleton(bpy.types.Operator):
-    """Attach skeleton to mediapipe"""
-    bl_idname = "posepipe.attach_skeleton"
-    bl_label = "Place Bones on objects"
-
-    def execute(self, context):
-        body_names = [
-            "00 nose", "01 left eye (inner)", "02 left eye", "03 left eye (outer)", "04 right eye (inner)", "05 right eye", 
-            "06 right eye (outer)", "07 left ear", "08 right ear", "09 mouth (left)", "10 mouth (right)", "11 left shoulder", 
-            "12 right shoulder", "13 left elbow", "14 right elbow", "15 left wrist", "16 right wrist", "17 left pinky", 
-            "18 right pinky", "19 left index", "20 right index", "21 left thumb", "22 right thumb", "23 left hip", "24 right hip", 
-            "25 left knee", "26 right knee", "27 left ankle", "28 right ankle", "29 left heel", "30 right heel", "31 left foot index", 
-            "32 right foot index"
-        ]
-
-        bpy.context.scene.frame_set(0)
-
-        bpy.context.scene.view_layers.update()
-
-        arm_obj = bpy.context.object
-
-        armature = {
-            "mixamorig:Hips": None,
-            "mixamorig:Spine.001": "mixamorig:Hips",
-            "mixamorig:Spine1.001": "mixamorig:Spine.001",
-            "mixamorig:Spine2.001": "mixamorig:Spine1.001",
-            "mixamorig:Neck.001": "mixamorig:Spine2.001",
-            "mixamorig:Head.001": "mixamorig:Neck.001",
-            "mixamorig:LeftUpLeg": "mixamorig:Hips",
-            "mixamorig:LeftLeg": "mixamorig:LeftUpLeg",
-            "mixamorig:LeftFoot": "mixamorig:LeftLeg",
-            "mixamorig:RightUpLeg": "mixamorig:Hips",
-            "mixamorig:RightLeg": "mixamorig:RightUpLeg",
-            "mixamorig:RightFoot": "mixamorig:RightLeg",
-            "mixamorig:LeftShoulder.001": "mixamorig:Spine2.001",
-            "mixamorig:LeftArm.001": "mixamorig:LeftShoulder.001",
-            "mixamorig:LeftForeArm.001": "mixamorig:LeftArm.001",
-            "mixamorig:RightShoulder.001": "mixamorig:Spine2.001",
-            "mixamorig:RightArm.001": "mixamorig:RightShoulder.001",
-            "mixamorig:RightForeArm.001": "mixamorig:RightArm.001",
-            "mixamorig:LeftHand.001": "mixamorig:LeftForeArm.001",
-            "mixamorig:LeftHandThumb1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandThumb2.001": "mixamorig:LeftHandThumb1.001",
-            "mixamorig:LeftHandThumb3.001": "mixamorig:LeftHandThumb2.001",
-            "mixamorig:LeftHandIndex1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandIndex2.001": "mixamorig:LeftHandIndex1.001",
-            "mixamorig:LeftHandIndex3.001": "mixamorig:LeftHandIndex2.001",
-            "mixamorig:LeftHandMiddle1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandMiddle2.001": "mixamorig:LeftHandMiddle1.001",
-            "mixamorig:LeftHandMiddle3.001": "mixamorig:LeftHandMiddle2.001",
-            "mixamorig:LeftHandRing1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandRing2.001": "mixamorig:LeftHandRing1.001",
-            "mixamorig:LeftHandRing3.001": "mixamorig:LeftHandRing2.001",
-            "mixamorig:LeftHandPinky1.001": "mixamorig:LeftHand.001",
-            "mixamorig:LeftHandPinky2.001": "mixamorig:LeftHandPinky1.001",
-            "mixamorig:LeftHandPinky3.001": "mixamorig:LeftHandPinky2.001",
-            "mixamorig:RightHand.001": "mixamorig:RightForeArm.001",
-            "mixamorig:RightHandThumb1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandThumb2.001": "mixamorig:RightHandThumb1.001",
-            "mixamorig:RightHandThumb3.001": "mixamorig:RightHandThumb2.001",
-            "mixamorig:RightHandIndex1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandIndex2.001": "mixamorig:RightHandIndex1.001",
-            "mixamorig:RightHandIndex3.001": "mixamorig:RightHandIndex2.001",
-            "mixamorig:RightHandMiddle1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandMiddle2.001": "mixamorig:RightHandMiddle1.001",
-            "mixamorig:RightHandMiddle3.001": "mixamorig:RightHandMiddle2.001",
-            "mixamorig:RightHandRing1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandRing2.001": "mixamorig:RightHandRing1.001",
-            "mixamorig:RightHandRing3.001": "mixamorig:RightHandRing2.001",
-            "mixamorig:RightHandPinky1.001": "mixamorig:RightHand.001",
-            "mixamorig:RightHandPinky2.001": "mixamorig:RightHandPinky1.001",
-            "mixamorig:RightHandPinky3.001": "mixamorig:RightHandPinky2.001"
-        }
-
-        bone_location_references = {
-            "mixamorig:Hips": ["23 left hip", "24 right hip"],
-            "mixamorig:LeftShoulder.001": ["11 left shoulder"],
-            "mixamorig:LeftArm.001": ["11 left shoulder"],
-            "mixamorig:LeftForeArm.001": ["13 left elbow"],
-            "mixamorig:RightShoulder.001": ["12 right shoulder"],
-            "mixamorig:RightArm.001": ["12 right shoulder"],
-            "mixamorig:RightForeArm.001": ["14 right elbow"],
-            "mixamorig:LeftUpLeg": ["23 left hip"],
-            "mixamorig:LeftLeg": ["25 left knee"],
-            "mixamorig:LeftFoot": ["27 left ankle"],
-            "mixamorig:RightUpLeg": ["24 right hip"],
-            "mixamorig:RightLeg": ["26 right knee"],
-            "mixamorig:RightFoot": ["28 right ankle"],
-            "mixamorig:Neck.001": ["11 left shoulder", "12 right shoulder"],
-            "mixamorig:Head.001": ["09 mouth (left)", "10 mouth (right)"],
-            "mixamorig:RightHand.001": ["00Hand Right", "09Hand Right"],
-            "mixamorig:RightHandThumb1.001": ["01Hand Right", "02Hand Right"],
-            "mixamorig:RightHandThumb2.001": ["02Hand Right", "03Hand Right"],
-            "mixamorig:RightHandThumb3.001": ["03Hand Right", "04Hand Right"],
-            "mixamorig:RightHandIndex1.001": ["05Hand Right", "06Hand Right"],
-            "mixamorig:RightHandIndex2.001": ["06Hand Right", "07Hand Right"],
-            "mixamorig:RightHandIndex3.001": ["07Hand Right", "08Hand Right"],
-            "mixamorig:RightHandMiddle1.001": ["09Hand Right", "10Hand Right"],
-            "mixamorig:RightHandMiddle2.001": ["10Hand Right", "11Hand Right"],
-            "mixamorig:RightHandMiddle3.001": ["11Hand Right", "12Hand Right"],
-            "mixamorig:RightHandRing1.001": ["13Hand Right", "14Hand Right"],
-            "mixamorig:RightHandRing2.001": ["14Hand Right", "15Hand Right"],
-            "mixamorig:RightHandRing3.001": ["15Hand Right", "16Hand Right"],
-            "mixamorig:RightHandPinky1.001": ["17Hand Right", "18Hand Right"],
-            "mixamorig:RightHandPinky2.001": ["18Hand Right", "19Hand Right"],
-            "mixamorig:RightHandPinky3.001": ["19Hand Right", "20Hand Right"],
-            "mixamorig:LeftHand.001": ["00Hand Left", "09Hand Left"],
-            "mixamorig:LeftHandThumb1.001": ["01Hand Left", "02Hand Left"],
-            "mixamorig:LeftHandThumb2.001": ["02Hand Left", "03Hand Left"],
-            "mixamorig:LeftHandThumb3.001": ["03Hand Left", "04Hand Left"],
-            "mixamorig:LeftHandIndex1.001": ["05Hand Left", "06Hand Left"],
-            "mixamorig:LeftHandIndex2.001": ["06Hand Left", "07Hand Left"],
-            "mixamorig:LeftHandIndex3.001": ["07Hand Left", "08Hand Left"],
-            "mixamorig:LeftHandMiddle1.001": ["09Hand Left", "10Hand Left"],
-            "mixamorig:LeftHandMiddle2.001": ["10Hand Left", "11Hand Left"],
-            "mixamorig:LeftHandMiddle3.001": ["11Hand Left", "12Hand Left"],
-            "mixamorig:LeftHandRing1.001": ["13Hand Left", "14Hand Left"],
-            "mixamorig:LeftHandRing2.001": ["14Hand Left", "15Hand Left"],
-            "mixamorig:LeftHandRing3.001": ["15Hand Left", "16Hand Left"],
-            "mixamorig:LeftHandPinky1.001": ["17Hand Left", "18Hand Left"],
-            "mixamorig:LeftHandPinky2.001": ["18Hand Left", "19Hand Left"],
-            "mixamorig:LeftHandPinky3.001": ["19Hand Left", "20Hand Left"]
-        }
-
-        bone_ik_references = {
-            "mixamorig:Spine2.001": ["mixamorig:Neck.001", 3]
-        }
-
-        bone_length_references = {
-            "mixamorig:LeftShoulder.001": ["12 right shoulder", 0.6],
-            "mixamorig:LeftArm.001": ["13 left elbow", 1.0],
-            "mixamorig:LeftForeArm.001": ["00Hand Left", 1.0],
-            "mixamorig:RightShoulder.001": ["11 left shoulder", 0.6],
-            "mixamorig:RightArm.001": ["14 right elbow", 1.0],
-            "mixamorig:RightForeArm.001": ["00Hand Right", 1.0],
-            "mixamorig:LeftUpLeg": ["25 left knee", 1.0],
-            "mixamorig:LeftLeg": ["27 left ankle", 1.0],
-            "mixamorig:LeftFoot": ["31 left foot index", 1.0],
-            "mixamorig:RightUpLeg": ["26 right knee", 1.0],
-            "mixamorig:RightLeg": ["28 right ankle", 1.0],
-            "mixamorig:RightFoot": ["32 right foot index", 1.0],
-            "mixamorig:RightHand.001": ["09Hand Right", 1.0],
-            "mixamorig:RightHandThumb1.001": ["02Hand Right", 1.0],
-            "mixamorig:RightHandThumb2.001": ["03Hand Right", 1.0],
-            "mixamorig:RightHandThumb3.001": ["04Hand Right", 1.0],
-            "mixamorig:RightHandIndex1.001": ["06Hand Right", 1.0],
-            "mixamorig:RightHandIndex2.001": ["07Hand Right", 1.0],
-            "mixamorig:RightHandIndex3.001": ["08Hand Right", 1.0],
-            "mixamorig:RightHandMiddle1.001": ["10Hand Right", 1.0],
-            "mixamorig:RightHandMiddle2.001": ["11Hand Right", 1.0],
-            "mixamorig:RightHandMiddle3.001": ["12Hand Right", 1.0],
-            "mixamorig:RightHandRing1.001": ["14Hand Right", 1.0],
-            "mixamorig:RightHandRing2.001": ["15Hand Right", 1.0],
-            "mixamorig:RightHandRing3.001": ["16Hand Right", 1.0],
-            "mixamorig:RightHandPinky1.001": ["18Hand Right", 1.0],
-            "mixamorig:RightHandPinky2.001": ["19Hand Right", 1.0],
-            "mixamorig:RightHandPinky3.001": ["20Hand Right", 1.0],
-            "mixamorig:LeftHand.001": ["09Hand Left", 1.0],
-            "mixamorig:LeftHandThumb1.001": ["02Hand Left", 1.0],
-            "mixamorig:LeftHandThumb2.001": ["03Hand Left", 1.0],
-            "mixamorig:LeftHandThumb3.001": ["04Hand Left", 1.0],
-            "mixamorig:LeftHandIndex1.001": ["06Hand Left", 1.0],
-            "mixamorig:LeftHandIndex2.001": ["07Hand Left", 1.0],
-            "mixamorig:LeftHandIndex3.001": ["08Hand Left", 1.0],
-            "mixamorig:LeftHandMiddle1.001": ["10Hand Left", 1.0],
-            "mixamorig:LeftHandMiddle2.001": ["11Hand Left", 1.0],
-            "mixamorig:LeftHandMiddle3.001": ["12Hand Left", 1.0],
-            "mixamorig:LeftHandRing1.001": ["14Hand Left", 1.0],
-            "mixamorig:LeftHandRing2.001": ["15Hand Left", 1.0],
-            "mixamorig:LeftHandRing3.001": ["16Hand Left", 1.0],
-            "mixamorig:LeftHandPinky1.001": ["18Hand Left", 1.0],
-            "mixamorig:LeftHandPinky2.001": ["19Hand Left", 1.0],
-            "mixamorig:LeftHandPinky3.001": ["20Hand Left", 1.0],
-        }
-
-        bpy.ops.object.mode_set(mode='POSE')
-
-        def position_bone(name, targets):
-            bone = arm_obj.data.edit_bones[name]
-            head_location_global = sum([bpy.data.objects[target].matrix_world.translation for target in targets], Vector()) / len(targets)
-            bone.head = head_location_global
-            bone.tail = head_location_global + Vector((0, 0, 0.1))
-            if name in bone_length_references:
-                # interpolate to find location
-                target, length = bone_length_references[name]
-                bone.tail = (1 - length) * head_location_global + length * bpy.data.objects[target].matrix_world.translation
-
-        for bone_name, targets in bone_location_references.items():
-            position_bone(bone_name, targets)
-
-        # for spine chain
-        for bone_name, (end_effector, chain_length) in bone_ik_references.items():
-            bone = bpy.context.object.data.edit_bones.get(bone_name)
-            chain = []
-            for i in range(chain_length):
-                chain.append(bone)
-                bone = bone.parent
-
-            for bone in reversed(chain):
-                bone.head = bone.parent.tail
-                bone.tail = bone.head + Vector((0, 0, 0.1))
-
-        bpy.context.scene.view_layers.update()
-
-
-        return {'FINISHED'}
-
     
 class PosePipePanel(Panel):
     bl_label = "PosePipe - Camera MoCap"
@@ -1006,8 +807,6 @@ class PosePipePanel(Panel):
         column = column_flow.column(align=True)
         column.label(text="Armature:", icon='BONE_DATA')
         column.operator(SkeletonBuilder.bl_idname, text="Generate Bones", icon='ARMATURE_DATA')
-        column.operator(AttachSkeleton.bl_idname, text="Attach Skeleton to mediapipe", icon='OBJECT_DATA')
-
 
 # ----------------------------------------
 
@@ -1097,7 +896,6 @@ _classes = [
     RunFileSelector,
     SkeletonBuilder,
     RetimeAnimation,
-    AttachSkeleton,
     BatchConvert,
 ]
 
