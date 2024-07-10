@@ -438,7 +438,7 @@ class SkeletonBuilder(bpy.types.Operator):
         Body_Skeleton.display_type = 'STICK'
 
         try:
-            bpy.data.armatures["Body_Skeleton"].bones["Bone"].name = "mixamorig:Hips.001"
+            bpy.data.armatures["Body_Skeleton"].bones["Bone"].name = "mixamorig:Hips"
         except:
             pass
 
@@ -452,17 +452,17 @@ class SkeletonBuilder(bpy.types.Operator):
                 bone.parent = bpy.context.object.data.edit_bones[parent_name]
             return bone
 
-        spine01 = create_bone("mixamorig:Spine.001", 0.1, "mixamorig:Hips.001")
+        spine01 = create_bone("mixamorig:Spine.001", 0.1, "mixamorig:Hips")
         spine02 = create_bone("mixamorig:Spine1.001", 0.1, "mixamorig:Spine.001")
         spine03 = create_bone("mixamorig:Spine2.001", 0.1, "mixamorig:Spine1.001")
         neck_01 = create_bone("mixamorig:Neck.001", 0.1, "mixamorig:Spine2.001")
         head = create_bone("mixamorig:Head.001", 0.1, "mixamorig:Neck.001")
 
-        thigh_l = create_bone("mixamorig:LeftUpLeg", 0.1, "mixamorig:Hips.001")
+        thigh_l = create_bone("mixamorig:LeftUpLeg", 0.1, "mixamorig:Hips")
         calf_l = create_bone("mixamorig:LeftLeg", 0.1, "mixamorig:LeftUpLeg")
         foot_l = create_bone("mixamorig:LeftFoot", 0.1, "mixamorig:LeftLeg")
 
-        thigh_r = create_bone("mixamorig:RightUpLeg", 0.1, "mixamorig:Hips.001")
+        thigh_r = create_bone("mixamorig:RightUpLeg", 0.1, "mixamorig:Hips")
         calf_r = create_bone("mixamorig:RightLeg", 0.1, "mixamorig:RightUpLeg")
         foot_r = create_bone("mixamorig:RightFoot", 0.1, "mixamorig:RightLeg")
 
@@ -529,9 +529,9 @@ class SkeletonBuilder(bpy.types.Operator):
             if subtarget:
                 constraint.subtarget = subtarget
 
-        add_constraint("mixamorig:Hips.001", "COPY_LOCATION", "23 left hip")
-        add_constraint("mixamorig:Hips.001", "COPY_LOCATION", "24 right hip")
-        PosePipe_BodyBones.pose.bones["mixamorig:Hips.001"].constraints["Copy Location.001"].influence = 0.5
+        add_constraint("mixamorig:Hips", "COPY_LOCATION", "23 left hip")
+        add_constraint("mixamorig:Hips", "COPY_LOCATION", "24 right hip")
+        PosePipe_BodyBones.pose.bones["mixamorig:Hips"].constraints["Copy Location.001"].influence = 0.5
 
         PosePipe_BodyBones.pose.bones["mixamorig:Spine.001"].location[1] = 0.1
         PosePipe_BodyBones.pose.bones["mixamorig:Spine1.001"].location[1] = 0.1
@@ -542,12 +542,12 @@ class SkeletonBuilder(bpy.types.Operator):
         add_constraint("mixamorig:Spine2.001", "IK", "PosePipe_BodyBones")
         PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].constraints["IK"].subtarget = "mixamorig:Neck.001"
         PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].constraints["IK"].chain_count = 3
-        PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].constraints["IK"].pole_target = PosePipe_BodyBones
-        PosePipe_BodyBones.pose.bones["mixamorig:Spine2.001"].constraints["IK"].pole_subtarget = "mixamorig:Neck.001"
 
+        add_constraint("mixamorig:LeftShoulder.001", "COPY_LOCATION", "12 right shoulder")
         add_constraint("mixamorig:LeftShoulder.001", "COPY_LOCATION", "11 left shoulder")
-        add_constraint("mixamorig:LeftShoulder.001", "STRETCH_TO", "12 right shoulder")
-        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].rest_length = 0.4
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints["Copy Location.001"].influence = 0.5
+        add_constraint("mixamorig:LeftShoulder.001", "STRETCH_TO", "11 left shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].rest_length = 0.1
         PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
         PosePipe_BodyBones.pose.bones["mixamorig:LeftShoulder.001"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
 
@@ -564,9 +564,12 @@ class SkeletonBuilder(bpy.types.Operator):
         PosePipe_BodyBones.pose.bones["mixamorig:LeftForeArm.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
         PosePipe_BodyBones.pose.bones["mixamorig:LeftForeArm.001"].constraints['Stretch To'].rest_length = 0.1
 
+        add_constraint("mixamorig:RightShoulder.001", "COPY_LOCATION", "11 left shoulder")
         add_constraint("mixamorig:RightShoulder.001", "COPY_LOCATION", "12 right shoulder")
-        add_constraint("mixamorig:RightShoulder.001", "STRETCH_TO", "11 left shoulder")
-        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].rest_length = 0.4
+        add_constraint("mixamorig:RightShoulder.001", "STRETCH_TO", "12 right shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints["Copy Location.001"].influence = 0.5
+        add_constraint("mixamorig:LeftShoulder.001", "STRETCH_TO", "11 left shoulder")
+        PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].rest_length = 0.1
         PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].volume = 'NO_VOLUME'
         PosePipe_BodyBones.pose.bones["mixamorig:RightShoulder.001"].constraints['Stretch To'].keep_axis = 'PLANE_Z'
 
