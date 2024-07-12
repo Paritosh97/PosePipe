@@ -15,6 +15,7 @@ bl_info = {
     "tracker_url": "https://github.com/SpectralVectors/PosePipe/issues"
 }
 
+import os
 import pip
 import pkg_resources
 import bpy
@@ -45,6 +46,8 @@ def ShowMessageBox(text="Empty message", title="Message Box", icon='INFO'):
 
 def batch_convert(file_dir):
 
+    count = 0
+
     # loop through all videos in the directory
     for file in os.listdir(file_dir):
         if file.endswith(".mp4"):
@@ -54,18 +57,27 @@ def batch_convert(file_dir):
             # put skeleton on the generated mediapipe
             bpy.ops.pose.skeleton_builder()
 
+            # set rest pose
+            bpy.context.scene.frame_set(0)
+
             # bake the animation of the skeleton with visual transforms without clearing constraints
-            bpy.ops.pose.bake(frame_start=0, frame_end=bpy.context.scene.frame_end, only_selected=False, visual_keying=True, clear_constraints=False, clear_parents=True, use_current_action=False, bake_types={'POSE'})
+            bpy.ops.nla.bake(frame_start=0, frame_end=bpy.context.scene.frame_end, only_selected=False, visual_keying=True, clear_constraints=False, clear_parents=True, use_current_action=False, bake_types={'POSE'})
 
             # bake again with constraints cleared
-            bpy.ops.pose.bake(frame_start=0, frame_end=bpy.context.scene.frame_end, only_selected=False, visual_keying=True, clear_constraints=True, clear_parents=True, use_current_action=False, bake_types={'POSE'})
+            bpy.ops.nla.bake(frame_start=0, frame_end=bpy.context.scene.frame_end, only_selected=False, visual_keying=True, clear_constraints=True, clear_parents=True, use_current_action=False, bake_types={'POSE'})
 
             # export bvh
-            bpy.ops.export_anim.bvh(filepath=os.path.join(file_dir, file.replace(".mp4", ".bvh")), check_existing=False, filter_glob="*.bvh", global_scale=1.0, frame_start=0, frame_end=bpy.context.scene.frame_end, rotate_mode='NATIVE', root_transform_only=False, bone_transform_only=False, use_custom_normals=False, use_keys=False, use_current_action=False, use_anim=False, use_selection=False, use_all_actions=False, axis_forward='Y', axis_up='Z')
+            bpy.ops.export_anim.bvh(filepath=os.path.join(file_dir, file.replace(".mp4", ".bvh")), check_existing=False, filter_glob="*.bvh", frame_start=0, frame_end=bpy.context.scene.frame_end, rotate_mode='NATIVE')
 
             # delete all objects
             bpy.ops.object.select_all(action='SELECT')
             bpy.ops.object.delete(use_global=False)
+
+            count += 1
+
+            if count > 2:
+                ShowMessageBox(title="Info", icon='INFO', text="Only 2 files can be converted at a time.")
+                break
 
 def run_full(file_path):
     from PosePipe.engine.MediaPipe import MediaPipe
@@ -249,6 +261,9 @@ def run_full(file_path):
         bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
         bpy.context.scene.frame_set(n)
         n = n + 1
+
+        # set frame_end
+        bpy.context.scene.frame_end = n
 
     cap.release()
     cv2.destroyAllWindows()
