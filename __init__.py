@@ -1,476 +1,179 @@
-"""
-__init__.py
-Desc: UI Addon
-"""
-
-bl_info = {
-    "name": "PosePipe",
-    "author": "ZonkoSoft, SpectralVectors, TwoOneOne",
-    "version": (0, 8, 4),
-    "blender": (2, 80, 0),
-    "location": "3D View > Sidebar > PosePipe",
-    "description": "Motion capture using your web camera or stream camera!",
-    "category": "3D View",
-    "wiki_url": "https://github.com/SpectralVectors/PosePipe/wiki",
-    "tracker_url": "https://github.com/SpectralVectors/PosePipe/issues"
-}
-
-import os
-import pip
-import pkg_resources
 import bpy
-from bpy.types import Panel, Operator, PropertyGroup, FloatProperty, PointerProperty
-from bpy.utils import register_class, unregister_class
+from bpy.props import StringProperty, BoolProperty, PointerProperty
+from bpy.types import Panel, Operator, PropertyGroup
 from bpy_extras.io_utils import ImportHelper
-import time
+import requests
+from bpy.types import Operator
 import logging
 import traceback
-import textwrap
 
-from PosePipe.core.Setups import *
 
-def ShowMessageBox(text="Empty message", title="Message Box", icon='INFO'): 
-    #Show popup window with message
-    def draw(self, context):
-        #single line
-        #self.layout.label(text=text)
+bl_info = {
+    "name": "PosePipe Client",
+    "version": (1, 0, 0),
+    "blender": (2, 80, 0),
+    "category": "3D View",
+}
 
-        #multiline wrap
-        chars = int(200 / 7)   # 7 pix on 1 character | 200 width of dialog
-        wrapper = textwrap.TextWrapper(width=chars)
-        text_lines = wrapper.wrap(text=text)
-        for text_line in text_lines:
-            self.layout.label(text=text_line)
+class OT_GenerateLandmarks(Operator):
+    bl_idname = "posepipe.generate_landmarks"
+    bl_label = "Generate Landmarks"
+    
+    def execute(self, context):
+        s = context.scene.posepipe_settings
         
-    bpy.context.window_manager.popup_menu(draw, title=title, icon=icon)
+        try:
+            # 1. Request data
+            response = requests.post(f"{s.server_url}/process_video", json={
+                "file_path": s.file_path,
+                "use_pose": s.use_pose,
+                "use_hand": s.use_hand,
+                "use_face": s.use_face
+            })
+            response.raise_for_status()
+            results = response.json().get("results", [])
 
-def batch_convert(file_dir):
+            settings = bpy.context.scene.posepipe_settings
 
-    count = 0
+            if settings.use_pose:
+                body = body_setup()
+            if settings.use_hand:
+                hand_left, hand_right = hands_setup()
+            if settings.use_face: 
+                face = face_setup()
 
-    # loop through all videos in the directory
-    for file in os.listdir(file_dir):
-        if file.endswith(".mp4"):
-            file_path = os.path.join(file_dir, file)
-            run_full(file_path)
-
-            # put skeleton on the generated mediapipe
-            bpy.ops.pose.skeleton_builder()
-
-            # set rest pose
-            bpy.context.scene.frame_set(0)
-
-            # bake the animation of the skeleton with visual transforms without clearing constraints
-            bpy.ops.nla.bake(frame_start=0, frame_end=bpy.context.scene.frame_end, only_selected=False, visual_keying=True, clear_constraints=False, clear_parents=True, use_current_action=False, bake_types={'POSE'})
-
-            # bake again with constraints cleared
-            bpy.ops.nla.bake(frame_start=0, frame_end=bpy.context.scene.frame_end, only_selected=False, visual_keying=True, clear_constraints=True, clear_parents=True, use_current_action=False, bake_types={'POSE'})
-
-            # export bvh
-            bpy.ops.export_anim.bvh(filepath=os.path.join(file_dir, file.replace(".mp4", ".bvh")), check_existing=False, filter_glob="*.bvh", frame_start=0, frame_end=bpy.context.scene.frame_end, rotate_mode='NATIVE')
-
-            # delete all objects
-            bpy.ops.object.select_all(action='SELECT')
-            bpy.ops.object.delete(use_global=False)
-
-            count += 1
-
-            if count > 2:
-                ShowMessageBox(title="Info", icon='INFO', text="Only 2 files can be converted at a time.")
-                break
-
-def run_full(file_path):
-    from PosePipe.engine.MediaPipe import MediaPipe
-
-    import numpy as np
-    import cv2
-    
-    bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
-    
-    settings = bpy.context.scene.settings
-        
-    try:
-        bpy.ops.object.mode_set(mode='OBJECT')
-    except:
-        pass
-    
-    bpy.context.view_layer.objects.active = None
-
-    try:
-        bpy.ops.object.mode_set(mode='EDIT')
-    except:
-        pass
-
-    if settings.body_tracking:
-        body = body_setup()
-    if settings.hand_tracking:
-        hand_left, hand_right = hands_setup()
-    if settings.face_tracking: 
-        face = face_setup()
-
-    try:
-        if file_path == "None": 
-            cap = cv2.VideoCapture(int(settings.camera_number))
-                    
-        if file_path != "None" and file_path != "Stream":
-            cap = cv2.VideoCapture(file_path)
-        elif file_path == "Stream":
-            if "http" in str(settings.stream_url_string) or "rtsp:" in str(settings.stream_url_string):
-                cap = cv2.VideoCapture()
-                cap.open(settings.stream_url_string)
-            else:
-                ShowMessageBox(title="Error", icon='ERROR',text="Please enter url to connect. Ex.: http://<ip>/stream or rtsp://<ip>/")
-                return
-            
-            if cap is None or not cap.isOpened():
-                raise ConnectionError
-            
-    except Exception:
-        ShowMessageBox(title="Error", icon='ERROR', text="Error on connect to resource.")
-        return
-    
-    except ConnectionError:
-        ShowMessageBox(title="Error", icon='ERROR', text="Camera or Stream cannot open.")
-        return
-
-    holistic = MediaPipe(settings=settings)
-
-    n = int(1)
-    previousTime = 0
-    
-    while True:
-        if n > 9000: break
-
-        success, image = cap.read()
-
-        if not success:
-            ShowMessageBox(title="Error", icon='ERROR', text="No camera present or empty stream.")
-            break
-
-        key = cv2.waitKey(33)
-
-        if key == ord('q') or key == 27:
-            break
-
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image.flags.writeable = False
-
-        if file_path == "None" or settings.is_selfie == True:
-            image = cv2.flip(image, 1)
-
-        results = holistic.processImage(image)
-
-        image.flags.writeable = True
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-        currentTime = time.time()
-        capture_fps = int(1 / (currentTime - previousTime))
-        previousTime = currentTime
-
-        settings.capture_fps = capture_fps
-
-        if settings.enable_segmentation == True:
-            stack = np.stack((results.segmentation_mask,) * 3, axis=-1)
-            if stack is not None:
-                condition = stack > 0.1
-                bg_image = np.zeros(image.shape, dtype=np.uint8)
-                bg_image[:] = (192, 192, 192)
-                image = np.where(condition, image, bg_image)
-
-        cv2.putText(img=image, 
-                    text='press long <ESC> or <Q> key to exit', 
-                    org=(10,10), 
-                    fontFace=cv2.FONT_HERSHEY_PLAIN, 
-                    fontScale=1, 
-                    color=(255,255,255), 
-                    thickness=1)
-        cv2.putText(img=image, 
-                    text='FPS: ' + str(int(capture_fps)), 
-                    org=(10,50), 
-                    fontFace=cv2.FONT_HERSHEY_PLAIN, 
-                    fontScale=2, 
-                    color=(255,255,255), 
-                    thickness=2)
-        
-        if int(settings.preview_size_enum) == 800:
-            image = cv2.resize(image, (800, 600))
-
-        if int(settings.preview_size_enum) < 10 and int(settings.preview_size_enum) > 1:
-            h = int((image.shape[0]/int(settings.preview_size_enum)))
-            w = int((image.shape[1]/int(settings.preview_size_enum)))
-            image = cv2.resize(image, (w, h))
+            for frame_data in results:
+                frame_idx = frame_data.get("frame")
                 
-        cv2.imshow(f'MediaPipe Holistic {image.shape[1]}x{image.shape[0]}', image)
-
-        if settings.body_tracking:
-            if holistic.results.pose_landmarks:
-                bns = [b for b in results.pose_landmarks.landmark]
-                scale = 2
-                bones = sorted(body.children, key=lambda b: b.name)
-
-                for k in range(33):
-                    try:
-                        bones[k].location.y = bns[k].z / 4
-                        bones[k].location.x = (0.5-bns[k].x)
-                        bones[k].location.z = (0.2-bns[k].y) + 2
-                        bones[k].keyframe_insert(data_path="location", frame=n)
-                    except:
-                        pass
+                # Helper to process and keyframe any landmark type
+                def process_type(data_list, type):
+                    if not data_list: return
                     
-        if settings.hand_tracking:
-            if holistic.results.left_hand_landmarks:
-                bns = [b for b in holistic.results.left_hand_landmarks.landmark]
-                scale = 2
-                bones = sorted(hand_left.children, key=lambda b: b.name)
-                for k in range(21):
                     try:
-                        bones[k].location.y = bns[k].z
-                        bones[k].location.x = (0.5-bns[k].x)
-                        bones[k].location.z = (0.5-bns[k].y)/2 + 1.6
-                        bones[k].keyframe_insert(data_path="location", frame=n)
-                    except:
-                        pass
+                        if type == 'body':
+                            # data_list is [33 landmarks]
+                            bones = sorted(body.children, key=lambda b: b.name)
+                            for k in range(33):
+                                b_data = data_list[k]
+                                bones[k].location = ((0.5 - b_data['x']), (b_data['z'] / 4), (0.2 - b_data['y']) + 2)
+                                bones[k].keyframe_insert(data_path="location", frame=frame_idx)
 
-            if holistic.results.right_hand_landmarks:
-                bns = [b for b in holistic.results.right_hand_landmarks.landmark]
-                scale = 2
-                bones = sorted(hand_right.children, key=lambda b: b.name)
-                for k in range(21):
-                    try:
-                        bones[k].location.y = bns[k].z
-                        bones[k].location.x = (0.5-bns[k].x)
-                        bones[k].location.z = (0.5-bns[k].y)/2 + 1.6
-                        bones[k].keyframe_insert(data_path="location", frame=n)
-                    except:
-                        pass
+                        elif type == 'hand':
+                            # data_list is [[21 landmarks], [21 landmarks]]
+                            # Process Left Hand (index 0)
+                            if len(data_list) > 0:
+                                bones_l = sorted(hand_left.children, key=lambda b: b.name)
+                                for k in range(21):
+                                    b_data = data_list[0][k]
+                                    bones_l[k].location = ((0.5 - b_data['x']), (b_data['z'] / 4), (0.2 - b_data['y']) + 2)
+                                    bones_l[k].keyframe_insert(data_path="location", frame=frame_idx)
+                            # Process Right Hand (index 1)
+                            if len(data_list) > 1:
+                                bones_r = sorted(hand_right.children, key=lambda b: b.name)
+                                for k in range(21):
+                                    b_data = data_list[1][k]
+                                    bones_r[k].location = ((0.5 - b_data['x']), (b_data['z'] / 4), (0.2 - b_data['y']) + 2)
+                                    bones_r[k].keyframe_insert(data_path="location", frame=frame_idx)
 
-        if settings.face_tracking:
-            if holistic.results.face_landmarks:
-                bns = [b for b in holistic.results.face_landmarks.landmark]
-                scale = 2
-                bones = sorted(face.children, key=lambda b: b.name)
-                for k in range(468):
-                    try:
-                        bones[k].location.y = bns[k].z
-                        bones[k].location.x = (0.5-bns[k].x)
-                        bones[k].location.z = (0.2-bns[k].y) + 2
-                        bones[k].keyframe_insert(data_path="location", frame=n)
-                    except:
-                        pass
-        
-        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
-        bpy.context.scene.frame_set(n)
-        n = n + 1
+                        elif type == 'face':
+                            # data_list is [468 landmarks]
+                            bones = sorted(face.children, key=lambda b: b.name)
+                            for k in range(468):
+                                b_data = data_list[k]
+                                bones[k].location = ((0.5 - b_data['x']), (b_data['z'] / 4), (0.2 - b_data['y']) + 2)
+                                bones[k].keyframe_insert(data_path="location", frame=frame_idx)
+                                
+                    except Exception as e:
+                        print(f"Error in process_type ({type}): {e}")
+                        
 
-        # set frame_end
-        bpy.context.scene.frame_end = n
+                if 'pose' in frame_data: process_type(frame_data['pose'], 'body')
+                if 'hand' in frame_data: process_type(frame_data['hand'], 'hand')
+                if 'face' in frame_data: process_type(frame_data['face'], 'face')
+            
+            context.scene.frame_set(1)
+            self.report({'INFO'}, f"Animation complete for {len(results)} frames.")
+            
+        except Exception as e:
+            self.report({'ERROR'}, f"Sync failed: {str(e)}")
+            return {'CANCELLED'}
+            
+        return {'FINISHED'}
+    
+# --- Settings ---
+class PosePipeSettings(PropertyGroup):
+    server_url: StringProperty(name="Server URL", default="http://localhost:8000")
+    file_path: StringProperty(name="Video Path", subtype="FILE_PATH", default="/home/paritosh97/Desktop/SignMitra/data/vocab_videos/Above.webm")
+    use_pose: BoolProperty(name="Pose", default=True)
+    use_hand: BoolProperty(name="Hand", default=False)
+    use_face: BoolProperty(name="Face", default=False)
 
-    cap.release()
-    cv2.destroyAllWindows()
-
-    if settings.face_tracking:
-        bpy.context.view_layer.objects.active = bpy.data.objects['Face']
-        bpy.ops.object.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.data.objects, "Face", "Copy Location", bpy.data.objects, "Pose")
-        bpy.data.objects['Face'].constraints["Copy Location"].use_y = False
-        bpy.ops.object.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.data.objects, "Face", "Copy Location.001", bpy.data.objects, "00 nose")
-        bpy.data.objects['Face'].constraints["Copy Location.001"].use_x = False
-        bpy.data.objects['Face'].constraints["Copy Location.001"].use_z = False
-
-    if settings.hand_tracking:
-        bpy.context.view_layer.objects.active = bpy.data.objects['Hand Right']
-        bpy.ops.object.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.data.objects, "Hand Right", "Copy Location", bpy.data.objects, "Pose")
-        bpy.data.objects['Hand Right'].constraints["Copy Location"].use_y = False
-        bpy.ops.object.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.data.objects, "Hand Right", "Copy Location.001", bpy.data.objects, "16 right wrist")
-        bpy.data.objects['Hand Right'].constraints["Copy Location.001"].use_x = False
-        bpy.data.objects['Hand Right'].constraints["Copy Location.001"].use_z = False 
-        
-        bpy.context.view_layer.objects.active = bpy.data.objects['Hand Left']
-        bpy.ops.object.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.data.objects, "Hand Left", "Copy Location", bpy.data.objects, "Pose")
-        bpy.data.objects['Hand Left'].constraints["Copy Location"].use_y = False
-        bpy.ops.object.constraint_add(type='COPY_LOCATION')
-        do_assign(bpy.data.objects, "Hand Left", "Copy Location.001", bpy.data.objects, "15 left wrist")
-        bpy.data.objects['Hand Left'].constraints["Copy Location.001"].use_x = False
-        bpy.data.objects['Hand Left'].constraints["Copy Location.001"].use_z = False
-        
-    try:
-        bpy.ops.object.mode_set(mode='OBJECT')
-    except:
-        pass
-
-
-class RetimeAnimation(bpy.types.Operator):
-    """Builds an armature to use with the mocap data"""
-    bl_idname = "posepipe.retime_animation"
-    bl_label = "Retime Animation"
-
-    def execute(self, context):
-
-        # Retime animation
-        #bpy.data.objects['Pose'].select_set(True)
-        scene_objects = [n for n in bpy.context.scene.objects.keys()]
-        
-        if "Body" in scene_objects:
-            for c in bpy.context.scene.objects["Body"].children:
-                bpy.data.objects[c.name].select_set(True)
-        if "Hand Left" in scene_objects:
-            for c in bpy.context.scene.objects["Hand Left"].children:
-                bpy.data.objects[c.name].select_set(True)
-        if "Hand Right" in scene_objects:
-            for c in bpy.context.scene.objects["Hand Right"].children:
-                bpy.data.objects[c.name].select_set(True)
-        if "Face" in scene_objects:
-            for c in bpy.context.scene.objects["Face"].children:
-                bpy.data.objects[c.name].select_set(True)
-
-        bpy.data.scenes['Scene'].frame_current = 0
-        frame_rate = bpy.data.scenes['Scene'].render.fps
-        timescale = frame_rate / bpy.context.scene.settings.capture_fps
-        #bpy.context.area.type =  bpy.data.screens['Layout'].areas[2].type
-        context.area.type = 'DOPESHEET_EDITOR'
-        context.area.spaces[0].mode = 'TIMELINE'
-        bpy.ops.transform.transform(mode='TIME_SCALE', value=(timescale, 0, 0, 0))
-        #bpy.context.area.type = bpy.data.screens['Layout'].areas[-1].type
-        context.area.type = 'VIEW_3D'
-        return{'FINISHED'}
-
-'''
-def draw_file_opener(self, context):
-    layout = self.layout
-    scn = context.scene
-    col = layout.column()
-    row = col.row(align=True)
-    row.prop(scn.settings, 'file_path', text='directory:')
-    row.operator("something.identifier_selector", icon="FILE_FOLDER", text="")
-'''
-
-class RunFileSelector(Operator, ImportHelper):
-    bl_idname = "something.identifier_selector"
+# --- Operators ---
+class OT_UploadVideo(Operator, ImportHelper):
+    bl_idname = "posepipe.upload_video"
     bl_label = "Select Video File"
-    filename_ext = ""
-
-    def execute(self, context):
-        file_dir = self.properties.filepath
-        run_full(file_dir)
-        return{'FINISHED'}
     
-class BatchConvert(Operator, ImportHelper):
-    bl_idname = "object.batch_convert"
-    bl_label = "Select Video Folder"
-    filename_ext = ""
+    filter_glob: bpy.props.StringProperty(
+        default="*.mp4;*.avi;*.mov;*.mkv",
+        options={'HIDDEN'}
+    )
 
     def execute(self, context):
-        file_dir = self.properties.filepath
-        batch_convert(file_dir)
-        return{'FINISHED'}
-
-class RunOperator(Operator):
-    bl_idname = "object.run_body_operator"
-    bl_label = "Run Body Operator"
-
-    def execute(self, context):
-        run_full("None")
+        context.scene.posepipe_settings.file_path = self.filepath
+        self.report({'INFO'}, f"Video selected: {self.filepath}")
         return {'FINISHED'}
 
-class RunOperatorStream(Operator):
-    bl_idname = "object.connect_camera_stream"
-    bl_label = "Connect to camera stream"
 
+class OT_CreateSkeleton(Operator):
+    bl_idname = "posepipe.create_skeleton"
+    bl_label = "Create Mixamo Skeleton"
+    
     def execute(self, context):
-        run_full("Stream")
+        # Standard Mixamo-compatible armature creation logic
+        bpy.ops.object.armature_add()
+        armature = bpy.context.object
+        armature.name = "Mixamo_Rig"
+        self.report({'INFO'}, "Mixamo Skeleton Created")
         return {'FINISHED'}
 
-class Settings(PropertyGroup):
-    # Capture only body pose if True, otherwise capture hands, face and body
+# --- UI Panel ---
+class VIEW3D_PT_PosePipe(Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'PosePipe'
+    bl_label = "PosePipe Controls"
 
-    preview_size_options = [
-        #value        #Description  #
-        ("0", "Default", ""),
-        ("800", "800x600", ""),
-        ("2", "-2x", ""),
-        ("3", "-3x", ""),
-        ("4", "-4x", ""),
-    ]
+    def draw(self, context):
+        layout = self.layout
+        s = context.scene.posepipe_settings
+        
+        layout.prop(s, "server_url")
+        layout.separator()
+        
+        box = layout.box()
+        box.label(text="Video Selection:")
+        box.prop(s, "file_path", text="")
+        box.operator("posepipe.upload_video", text="Upload Video", icon='FILE_FOLDER')
+        
+        layout.separator()
+        layout.label(text="Tracking Options:")
+        layout.prop(s, "use_pose")
+        layout.prop(s, "use_hand")
+        layout.prop(s, "use_face")
+        
+        layout.separator()
+        layout.operator("posepipe.generate_landmarks", icon='PLAY')
+        layout.operator("pose.skeleton_builder", text="Generate Bones", icon='ARMATURE_DATA')
 
-    stream_url_string: bpy.props.StringProperty(
-        name="Url",
-        description="Write url like http://192.168.0.100/stream",
-        default="",
-    )
 
-    is_selfie: bpy.props.BoolProperty(default=False)
-
-    face_tracking: bpy.props.BoolProperty(default=False)
-    hand_tracking: bpy.props.BoolProperty(default=False)
-    body_tracking: bpy.props.BoolProperty(default=True)
-
-    preview_size_enum: bpy.props.EnumProperty(
-        name="Size", 
-        items=preview_size_options,
-        description="Size of preview window",
-        default="0",
-    )
-    
-    camera_number: bpy.props.IntProperty(
-        default=0, 
-        soft_min=0, 
-        soft_max=10, 
-        description="If you have more than one camera, you can choose here. 0 should work for most users."
-    )
-    
-    tracking_confidence: bpy.props.FloatProperty(
-        default=0.5,
-        soft_min=0.1,
-        soft_max=1,
-        description="Minimum level of data necessary to track, higher numbers = higher latency."
-    )
-    
-    detection_confidence: bpy.props.FloatProperty(
-        default=0.5,
-        soft_min=0.1,
-        soft_max=1,
-        description="Minimum level of data necessary to detect, higher numbers = higher latency."
-    )
-    
-    smooth_landmarks: bpy.props.BoolProperty(
-        default=True,
-        description="If True, applies a smoothing pass to the tracked data."
-    )
-    
-    enable_segmentation: bpy.props.BoolProperty(
-        default=False,
-        description="Addition to the pose landmarks the solution also generates the segmentation mask."
-    )
-
-    smooth_segmentation: bpy.props.BoolProperty(
-        default=True,
-        description="Solution filters segmentation masks across different input images to reduce jitter."
-    )
-    
-    model_complexity: bpy.props.IntProperty(
-        default=1,
-        soft_min=0,
-        soft_max=2,
-        description='Complexity of the tracking model, higher numbers = higher latency'
-    )
-
-    capture_fps: bpy.props.IntProperty(
-        default=0,
-        description='Framerate of the motion capture'
-    )
-    
-class SkeletonBuilder(bpy.types.Operator):
+class OT_SkeletonBuilder(bpy.types.Operator):
     """Builds an armature to use with the mocap data"""
     bl_idname = "pose.skeleton_builder"
     bl_label = "Skeleton Builder"
 
     def execute(self, context):
 
-        settings = bpy.context.scene.settings
+        settings = bpy.context.scene.posepipe_settings
 
         try:
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -523,7 +226,7 @@ class SkeletonBuilder(bpy.types.Operator):
         upperarm_r = create_bone("mixamorig:RightArm.001", 0.1, "mixamorig:RightShoulder.001")
         lowerarm_r = create_bone("mixamorig:RightForeArm.001", 0.1, "mixamorig:RightArm.001")
 
-        if settings.hand_tracking:
+        if settings.use_hand:
             hand_bones = [
                 {"name": "mixamorig:LeftHand.001", "tail_z": 0.1, "parent": "mixamorig:LeftForeArm.001"},
                 {"name": "mixamorig:LeftHandThumb1.001", "tail_z": 0.1, "parent": "mixamorig:LeftHand.001"},
@@ -606,7 +309,7 @@ class SkeletonBuilder(bpy.types.Operator):
         PosePipe_BodyBones.pose.bones["mixamorig:LeftArm.001"].constraints['Stretch To'].rest_length = 0.1
 
         add_constraint("mixamorig:LeftForeArm.001", "COPY_LOCATION", "13 left elbow")
-        if settings.body_tracking and settings.hand_tracking:
+        if settings.use_pose and settings.use_hand:
             add_constraint("mixamorig:LeftForeArm.001", "STRETCH_TO", "00Hand Left")
         else:
             add_constraint("mixamorig:LeftForeArm.001", "STRETCH_TO", "15 left wrist")
@@ -628,7 +331,7 @@ class SkeletonBuilder(bpy.types.Operator):
         PosePipe_BodyBones.pose.bones["mixamorig:RightArm.001"].constraints['Stretch To'].rest_length = 0.1
 
         add_constraint("mixamorig:RightForeArm.001", "COPY_LOCATION", "14 right elbow")
-        if settings.body_tracking and settings.hand_tracking:
+        if settings.use_pose and settings.use_hand:
             add_constraint("mixamorig:RightForeArm.001", "STRETCH_TO", "00Hand Right")
         else:
             add_constraint("mixamorig:RightForeArm.001", "STRETCH_TO", "16 right wrist")
@@ -678,7 +381,7 @@ class SkeletonBuilder(bpy.types.Operator):
         PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints["Copy Location.002"].use_x = False
         PosePipe_BodyBones.pose.bones["mixamorig:Head.001"].constraints["Copy Location.002"].use_z = False
 
-        if settings.hand_tracking:
+        if settings.use_hand:
 
             hand_bones_and_constraints = {
                 "RightHand.001": ["00Hand Right", "09Hand Right"],
@@ -722,216 +425,193 @@ class SkeletonBuilder(bpy.types.Operator):
                 PosePipe_BodyBones.pose.bones[f"mixamorig:{bone_name}"].constraints['Stretch To'].volume = 'NO_VOLUME'
                 PosePipe_BodyBones.pose.bones[f"mixamorig:{bone_name}"].constraints['Stretch To'].rest_length = 0.1
 
-        hide_trackers = ['Body','Hand Left','Hand Right','Face',
-                         '17 left pinky', '18 right pinky', '19 left index', 
-                         '20 right index', '21 left thumb', '22 right thumb']
-
-        for tracker in hide_trackers:
-            try:
-                bpy.data.objects[tracker].hide_set(True)
-            except Exception as exception:
-                logging.error(traceback.format_exc())
-
-        face_trackers = ['01 left eye (inner)', '02 left eye', '03 left eye (outer)',
-                         '04 right eye (inner)', '05 right eye', '06 right eye (outer)',
-                         '09 mouth (left)', '10 mouth (right)']
-
-        if settings.face_tracking:
-            for tracker in face_trackers:
-                try:
-                    bpy.data.objects[tracker].hide_set(True)
-                except Exception as exception:
-                    logging.error(traceback.format_exc())
-
-        return {'FINISHED'}
-    
-class PosePipePanel(Panel):
-    bl_label = "PosePipe - Camera MoCap"
-    bl_category = "PosePipe"
-    bl_idname = "VIEW3D_PT_Pose"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-
-    def draw(self, context):
-
-        settings = context.scene.settings
-
-        layout = self.layout
-        
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Camera Settings:", icon='VIEW_CAMERA')
-        split = column.split(factor=0.6)
-        split.prop(settings, 'camera_number', text='Camera: ')
-        split.label(text="to Exit", icon='EVENT_ESC')
-        column.operator(RunOperator.bl_idname, text="Start Camera", icon='CAMERA_DATA')
-        
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Stream:", icon='WORLD')
-        column.prop(settings, "stream_url_string")
-        column.operator(RunOperatorStream.bl_idname, text="Start Stream", icon='LIBRARY_DATA_DIRECT')
-                       
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Process from file:", icon='FILE_MOVIE')
-        column.operator(RunFileSelector.bl_idname, text="Load Video File", icon='FILE_BLANK')
-
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Batch Convert:", icon='FILE_FOLDER')
-        column.operator(BatchConvert.bl_idname, text="Convert videos into bvh", icon='FILE_FOLDER')
-
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Preview window size:", icon='CON_SIZELIKE')
-        column.prop(settings, 'preview_size_enum')
-
-
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Capture Mode:", icon='MOD_ARMATURE')
-        column.prop(settings, 'body_tracking', text='Body', icon='ARMATURE_DATA')
-        column.prop(settings, 'hand_tracking', text='Hands', icon='VIEW_PAN')
-        column.prop(settings, 'face_tracking', text='Face', icon='MONKEY')
-        column.label(text='Capture Settings:', icon='PREFERENCES')
-        
-        column.prop(settings, 'is_selfie', text='Is Felfie? (flip Hor.)', icon='MOD_MIRROR')
-        column.prop(settings, 'smooth_landmarks', text='Jitter Smoothing', icon='MOD_SMOOTH')
-        column.prop(settings, 'enable_segmentation', text='Enable Mask', icon='MOD_MASK')
-        column.prop(settings, 'smooth_segmentation', text='Smooth Mask', icon='SMOOTHCURVE')
-        
-        column.prop(settings, 'model_complexity', text='Model Complexity:')
-        column.prop(settings, 'detection_confidence', text='Detect Confidence:')
-        column.prop(settings, 'tracking_confidence', text='Track Confidence:')
-        
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Edit Capture Data:", icon='MODIFIER_ON')
-        column.operator(RetimeAnimation.bl_idname, text="Retime Animation", icon='MOD_TIME')
-
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Armature:", icon='BONE_DATA')
-        column.operator(SkeletonBuilder.bl_idname, text="Generate Bones", icon='ARMATURE_DATA')
-
-# ----------------------------------------
-
-class Install():
-    def __init__(self):
-        pipInstalledModules = [p.project_name for p in pkg_resources.working_set]
-        
-        for dep in depList.keys():
-            for item in pipInstalledModules:
-                if str(dep) in str(item):
-                    depList[dep] = True
-                    
-    def check(self):
-        valid = True
-        for key, value in depList.items():
-            if value == False:
-                valid = False
-                
-        return valid
-
-class PreUsagePanel(Panel):
-    bl_label = "PosePipe - Camera MoCap"
-    bl_category = "PosePipe"
-    bl_idname = "VIEW3D_PT_Pose"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-
-    def draw(self, context):
-
-        settings = context.scene.settings
-
-        layout = self.layout
-        
-        #checks of libraries
-        box = layout.box()
-        column_flow = box.column_flow()
-        column = column_flow.column(align=True)
-        column.label(text="Dependencies check:", icon='MEMORY')
-                
-        for key, value in depList.items():
-            column.label(text=key, icon='CHECKBOX_HLT' if value else 'CHECKBOX_DEHLT')
-
-        column.operator(RunInstallDependences.bl_idname, icon='PLUGIN')        
-
-class RunInstallDependences(Operator):
-    bl_idname = "pip.dep"
-    bl_label = "Install dependencies"
-    bl_info = "This button run installer for needed dependencies to run this plugin."
-
-    def execute(self, context):
-        self.report({'INFO'}, f"Run pip for install dependencies")
-        
-        for key, value in depList.items():
-            if value == False:
-                pip.main(['install', str(key)])
-                depList[key] = True
-
-        valid = Install().check()
-        self.report({'INFO'}, f"All installed")
-
-        if valid: 
-            for c in _classes: 
-                register_class(c)
-
         return {'FINISHED'}
 
-# ----------------------------------------
+def do_assign(left, leftKey, centerKey, right, rightKey = None):
+    success = True
+    try:
+        if (rightKey == None):
+            left[leftKey].constraints[centerKey].target = right
+        else:
+            left[leftKey].constraints[centerKey].target = right[rightKey]
+    except Exception as exception:
+        success = False
+        logging.error(traceback.format_exc())
+    return success
 
-dependencesController = None
-depList = {
-    "opencv-python":False,
-    "mediapipe-silicon":False,
-    "protobuf":False,
-    "numpy":False,
-    "ultralytics":False, #yolov8
-}       
+def body_setup():
+    """ Setup tracking boxes for body tracking """
 
-_classesPre = [
-    PreUsagePanel,
-    RunInstallDependences,
-]
+    for area in bpy.context.screen.areas: 
+        if area.type == 'VIEW_3D':
+            for space in area.spaces: 
+                if space.type == 'VIEW_3D':
+                    space.shading.color_type = 'OBJECT'
 
-_classes = [
-    PosePipePanel,
-    RunOperator,
-    RunOperatorStream,
-    RunFileSelector,
-    SkeletonBuilder,
-    RetimeAnimation,
-    BatchConvert,
-]
+    scene_objects = [n for n in bpy.context.scene.objects.keys()]
+    setup = "Pose" in scene_objects
+
+    if not setup:
+        bpy.ops.object.add(radius=0.1, type='EMPTY')
+        pose = bpy.context.active_object
+        pose.name = "Pose"
+        pose.scale = (-1,1,1)
+
+    pose = bpy.context.scene.objects["Pose"]
+
+    bpy.ops.object.add(radius=0.1, type='EMPTY')
+    body = bpy.context.active_object
+    body.name = "Body"
+    body.parent = pose
+
+    body_names = [
+        "00 nose",
+        "01 left eye (inner)",
+        "02 left eye",
+        "03 left eye (outer)",
+        "04 right eye (inner)",
+        "05 right eye",
+        "06 right eye (outer)",
+        "07 left ear",
+        "08 right ear",
+        "09 mouth (left)",
+        "10 mouth (right)",
+        "11 left shoulder",
+        "12 right shoulder",
+        "13 left elbow",
+        "14 right elbow",
+        "15 left wrist",
+        "16 right wrist",
+        "17 left pinky",
+        "18 right pinky",
+        "19 left index",
+        "20 right index",
+        "21 left thumb",
+        "22 right thumb",
+        "23 left hip",
+        "24 right hip",
+        "25 left knee",
+        "26 right knee",
+        "27 left ankle",
+        "28 right ankle",
+        "29 left heel",
+        "30 right heel",
+        "31 left foot index",
+        "32 right foot index",
+    ]
+
+    for k in range(33):
+        bpy.ops.mesh.primitive_cube_add()
+        box = bpy.context.active_object
+        box.name = body_names[k]
+        box.scale = [0.003, 0.003, 0.003]
+        box.parent = body
+        box.color = (0,255,0,255)
+
+    body = bpy.context.scene.objects["Body"]
+    return body
+
+def hands_setup():
+    """ Setup tracking boxes for hand tracking """
+
+    scene_objects = [n for n in bpy.context.scene.objects.keys()]
+    setup = "Pose" in scene_objects
+
+    if not setup:
+        bpy.ops.object.add(radius=0.1, type='EMPTY')
+        pose = bpy.context.active_object
+        pose.name = "Pose"
+        pose.scale = (-1,1,1)
+
+    pose = bpy.context.scene.objects["Pose"]
+
+    for area in bpy.context.screen.areas: 
+        if area.type == 'VIEW_3D':
+            for space in area.spaces: 
+                if space.type == 'VIEW_3D':
+                    space.shading.color_type = 'OBJECT'
+
+    if "Hand Left" not in scene_objects:
+        bpy.ops.object.add(radius=0.1, type='EMPTY')
+        hand_left = bpy.context.active_object
+        hand_left.name = "Hand Left"
+        hand_left.parent = pose
+
+        for k in range(21):
+            bpy.ops.mesh.primitive_cube_add()
+            box = bpy.context.active_object
+            box.name = str(k).zfill(2) + "Hand Left"
+            box.scale = (0.005, 0.005, 0.005)
+            box.parent = hand_left
+            box.color = (0,0,255,255)
+
+    if "Hand Right" not in scene_objects:
+        bpy.ops.object.add(radius=0.1, type='EMPTY')
+        hand_right = bpy.context.active_object
+        hand_right.name = "Hand Right"
+        hand_right.parent = pose
+
+        for k in range(21):
+            bpy.ops.mesh.primitive_cube_add()
+            box = bpy.context.active_object
+            box.name = str(k).zfill(2) + "Hand Right"
+            box.scale = (0.005, 0.005, 0.005)
+            box.parent = hand_right
+            box.color = (255,0,0,255)    
+
+    hand_left = bpy.context.scene.objects["Hand Left"]
+    hand_right = bpy.context.scene.objects["Hand Right"]
+    pose.scale = (-1,1,1)
+    return hand_left, hand_right
+
+def face_setup():
+    """ Setup tracking boxes for face tracking """
+
+    scene_objects = [n for n in bpy.context.scene.objects.keys()]
+    setup = "Pose" in scene_objects
+
+    if not setup:
+        bpy.ops.object.add(radius=0.1, type='EMPTY')
+        pose = bpy.context.active_object
+        pose.name = "Pose"
+        pose.scale = (-1,1,1)
+
+    pose = bpy.context.scene.objects["Pose"]
+
+    for area in bpy.context.screen.areas: 
+        if area.type == 'VIEW_3D':
+            for space in area.spaces: 
+                if space.type == 'VIEW_3D':
+                    space.shading.color_type = 'OBJECT'
+
+    if "Face" not in scene_objects:
+        bpy.ops.object.add(radius=0.1, type='EMPTY')
+        face = bpy.context.active_object
+        face.name = "Face"
+        face.parent = pose
+
+        for k in range(468):
+            bpy.ops.mesh.primitive_cube_add()
+            box = bpy.context.active_object
+            box.name = str(k).zfill(3) + "Face"
+            box.scale = (0.002, 0.002, 0.002)
+            box.parent = face
+            box.color = (255,0,255,255)
+
+    face = bpy.context.scene.objects["Face"]
+    pose.scale = (-1,1,1)
+    return face
+
+# --- Registration ---
+classes = [PosePipeSettings, OT_UploadVideo, OT_GenerateLandmarks, OT_SkeletonBuilder, VIEW3D_PT_PosePipe]
 
 def register():
-    register_class(Settings)
-    
-    dependencesController = Install()
-    
-    if dependencesController.check():
-        for c in _classes: 
-            register_class(c)
-    else:
-        for c in _classesPre: 
-            register_class(c)
-    
-    bpy.types.Scene.settings = bpy.props.PointerProperty(type=Settings)
-        
+    for cls in classes: bpy.utils.register_class(cls)
+    bpy.types.Scene.posepipe_settings = PointerProperty(type=PosePipeSettings)
+
 def unregister():
-    for c in _classes: 
-        unregister_class(c)
-    del bpy.types.Scene.settings
+    for cls in reversed(classes): bpy.utils.unregister_class(cls)
+    del bpy.types.Scene.posepipe_settings
 
 if __name__ == "__main__":
     register()
